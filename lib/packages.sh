@@ -8,26 +8,38 @@ install_manifest() {
 
     [[ -f "$manifest" ]] || die "Package manifest not found: $manifest"
 
-    local pkgs=()
+    local all_pkgs=()
     while IFS= read -r line; do
         line="${line%%#*}"
         line="${line// /}"
-        [[ -n "$line" ]] && pkgs+=("$line")
+        [[ -n "$line" ]] && all_pkgs+=("$line")
     done < "$manifest"
 
-    if [[ ${#pkgs[@]} -eq 0 ]]; then
+    if [[ ${#all_pkgs[@]} -eq 0 ]]; then
         warn "No packages found in $manifest"
         return 0
     fi
 
-    info "Installing ${#pkgs[@]} packages from $label"
+    # Filter out already-installed packages
+    local pkgs=()
+    for pkg in "${all_pkgs[@]}"; do
+        xbps-query -l "$pkg" &>/dev/null || pkgs+=("$pkg")
+    done
+
+    local already=$(( ${#all_pkgs[@]} - ${#pkgs[@]} ))
+    if [[ ${#pkgs[@]} -eq 0 ]]; then
+        info "$label: all ${#all_pkgs[@]} packages already installed, skipping"
+        return 0
+    fi
+
+    [[ $already -gt 0 ]] && info "$label: $already already installed, installing ${#pkgs[@]} new"
 
     printf '%s\n' "${pkgs[@]}" \
         | pv -l -s "${#pkgs[@]}" -p -t -e -N "$label" \
         | xargs xbps-install -y \
         || die "Failed installing packages from $label"
 
-    success "$label packages installed"
+    success "$label: ${#pkgs[@]} packages installed"
 }
 
 install_morewaita() {

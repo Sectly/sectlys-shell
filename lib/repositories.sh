@@ -3,6 +3,10 @@
 VOIDERS_CONF="/etc/xbps.d/voiders-dev-repo.conf"
 VOIDERS_URL="https://repo.voiders.dev"
 
+_repo_installed() {
+    xbps-query -l "$1" &>/dev/null
+}
+
 setup_repositories() {
     log_section "Repository configuration"
 
@@ -11,16 +15,28 @@ setup_repositories() {
     success "XBPS updated"
 
     step "Enable nonfree repository"
-    xbps-install -Sy void-repo-nonfree || die "Failed to enable nonfree repo"
-    success "nonfree enabled"
+    if _repo_installed void-repo-nonfree; then
+        info "nonfree already enabled, skipping"
+    else
+        xbps-install -Sy void-repo-nonfree || die "Failed to enable nonfree repo"
+        success "nonfree enabled"
+    fi
 
     step "Enable multilib repository"
-    xbps-install -Sy void-repo-multilib || die "Failed to enable multilib repo"
-    success "multilib enabled"
+    if _repo_installed void-repo-multilib; then
+        info "multilib already enabled, skipping"
+    else
+        xbps-install -Sy void-repo-multilib || die "Failed to enable multilib repo"
+        success "multilib enabled"
+    fi
 
     step "Enable multilib/nonfree repository"
-    xbps-install -Sy void-repo-multilib-nonfree || die "Failed to enable multilib/nonfree repo"
-    success "multilib/nonfree enabled"
+    if _repo_installed void-repo-multilib-nonfree; then
+        info "multilib/nonfree already enabled, skipping"
+    else
+        xbps-install -Sy void-repo-multilib-nonfree || die "Failed to enable multilib/nonfree repo"
+        success "multilib/nonfree enabled"
+    fi
 
     step "Configure voiders.dev repository"
     if [[ -f "$VOIDERS_CONF" ]]; then

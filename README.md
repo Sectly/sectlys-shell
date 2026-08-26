@@ -6,8 +6,10 @@ An opinionated, reproducible Niri + Quickshell desktop installer for Void Linux 
 
 ## Requirements
 
-- Void Linux x86_64 **glibc** (not musl) — [download](https://voidlinux.org/download/)
-- A non-root user account created during Void setup
+- Void Linux x86_64 **glibc** (not musl) fully installed to disk - [download](https://voidlinux.org/download/)
+  - Boot the live ISO, run `void-installer`, and complete the full install before proceeding
+  - Choose **glibc** when prompted for the C library - musl is not supported
+  - Create a regular (non-root) user account during setup
 - Network access
 
 ## Quick start
@@ -42,7 +44,7 @@ After rebooting:
 
 1. A boot splash appears briefly on the login TTY
 2. **ly** display manager shows the login screen (TTY2)
-3. Log in — **Niri** starts with **Quickshell** as the desktop shell
+3. Log in - **Niri** starts with **Quickshell** as the desktop shell
 4. A welcome window explains the keybinds and scripts on first launch
 
 ## Networking on a fresh Void install
@@ -53,7 +55,7 @@ If networking is not working before you run the installer:
 # Wired
 ln -s /etc/sv/dhcpcd /var/service/
 
-# Wi-Fi — connect with wpa_supplicant first, then dhcpcd
+# Wi-Fi - connect with wpa_supplicant first, then dhcpcd
 ```
 
 The installer's network check (`check_network`) will tell you if it can't reach the Void repos.
@@ -65,7 +67,7 @@ update          # confirms before running
 update -y       # skip confirmation
 ```
 
-Or re-run `install.sh` — it is idempotent and picks up any new packages added to the manifests.
+Or re-run `install.sh` - it is idempotent and picks up any new packages added to the manifests.
 
 ## Reset configs
 

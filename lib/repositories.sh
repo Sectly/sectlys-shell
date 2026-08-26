@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-VOIDERS_CONF="/etc/xbps.d/10-voiders.conf"
-VOIDERS_URL="https://repo.voiders.dev/current"
+VOIDERS_CONF="/etc/xbps.d/voiders-dev-repo.conf"
+VOIDERS_URL="https://repo.voiders.dev"
 
 setup_repositories() {
     log_section "Repository configuration"

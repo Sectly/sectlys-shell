@@ -1,65 +1,32 @@
 # Sectly's Shell
 
-An opinionated, reproducible Niri + Quickshell desktop built on x86_64 glibc Void Linux.
+An opinionated, reproducible Niri + Quickshell desktop installer for Void Linux (x86_64 glibc).
+
+> **Workflow:** Install Void Linux -> run installer -> reboot -> ly login -> Niri + Quickshell
 
 ## Requirements
 
-- Void Linux x86_64 **glibc** (not musl)
-- A non-root user account
-- Network access during install
+- Void Linux x86_64 **glibc** (not musl) — [download](https://voidlinux.org/download/)
+- A non-root user account created during Void setup
+- Network access
 
-## Install
-
-### 1. Install Void Linux
-
-Download and install the **x86_64 glibc** edition from [voidlinux.org](https://voidlinux.org/download/).
-The base (minimal) image is fine. During setup, create a regular user account.
-
-### 2. Set up networking
-
-On a fresh Void install, make sure you have internet access before continuing.
-If you used the live image installer, networking is usually already configured via `dhcpcd`.
-You can verify with:
+## Quick start
 
 ```bash
-ping -c 1 voidlinux.org
-```
-
-If it fails, enable dhcpcd for your interface:
-
-```bash
-ln -s /etc/sv/dhcpcd /var/service/
-```
-
-Or for Wi-Fi, use `wpa_supplicant` and `dhcpcd` together.
-
-### 3. Get the repository
-
-If `git` is not yet installed:
-
-```bash
+# 1. Install git if not already present
 xbps-install -Sy git
-```
 
-Then clone:
-
-```bash
-git clone https://github.com/sectly/sectlys-shell
+# 2. Clone
+git clone https://github.com/Sectly/sectlys-shell
 cd sectlys-shell
-```
 
-Or copy the folder from a USB drive.
-
-### 4. Run the installer
-
-```bash
-su -c 'bash install.sh'
-# or if sudo is already available:
+# 3. Run the installer as root
 sudo bash install.sh
-```
+# or without sudo on a fresh install:
+su -c 'bash install.sh'
 
-The installer will ask for confirmation before making any changes.
-It is recommended to make a backup or snapshot of your system first.
+# 4. Reboot when prompted
+```
 
 Pass `-y` to skip the confirmation prompt:
 
@@ -67,27 +34,42 @@ Pass `-y` to skip the confirmation prompt:
 sudo bash install.sh -y
 ```
 
-### 5. Reboot
+The full install log is written to `/var/log/sectlys-shell-install.log`.
 
-The installer prompts to reboot when done. After rebooting:
+## First boot
 
-- The boot splash appears briefly on the login TTY
-- ly display manager presents the login screen
-- Log in and Niri starts with Quickshell as the desktop shell
+After rebooting:
+
+1. A boot splash appears briefly on the login TTY
+2. **ly** display manager shows the login screen (TTY2)
+3. Log in — **Niri** starts with **Quickshell** as the desktop shell
+4. A welcome window explains the keybinds and scripts on first launch
+
+## Networking on a fresh Void install
+
+If networking is not working before you run the installer:
+
+```bash
+# Wired
+ln -s /etc/sv/dhcpcd /var/service/
+
+# Wi-Fi — connect with wpa_supplicant first, then dhcpcd
+```
+
+The installer's network check (`check_network`) will tell you if it can't reach the Void repos.
 
 ## Update
 
 ```bash
-update
-# or to skip confirmation:
-update -y
+update          # confirms before running
+update -y       # skip confirmation
 ```
 
-Or re-run the installer - it is idempotent and will pick up any new packages added to the manifests.
+Or re-run `install.sh` — it is idempotent and picks up any new packages added to the manifests.
 
 ## Reset configs
 
-Restores default configs, backing up your existing ones first:
+Restores default configs and backs up existing ones first:
 
 ```bash
 reset-config
@@ -95,60 +77,56 @@ reset-config
 
 ## Wallpapers
 
-Browse and download wallpapers from the minimalistic wallpaper collection:
+Browse and download from the minimalistic wallpaper collection:
 
 ```bash
-wallpaper search
-```
-
-Set a downloaded wallpaper:
-
-```bash
-wallpaper set moon-mountain.png
+wallpaper search          # fuzzy search + multi-select with fzf
+wallpaper set <filename>  # set a downloaded wallpaper
+wallpaper list            # list downloaded wallpapers
+wallpaper current         # show active wallpaper
 ```
 
 ## Themes
 
-Switch between Tomorrow color variants:
+Switch between Tomorrow color variants (applies to Quickshell + Alacritty):
 
 ```bash
 set-theme --list
 set-theme tomorrow-night-blue
 ```
 
+Or use the settings panel: **Super + Shift + S**
+
+Available themes: `tomorrow-night-eighties` (default), `tomorrow-night`, `tomorrow-night-blue`, `tomorrow-night-bright`, `tomorrow`
+
 ## Keybinds
 
 | Keys | Action |
 |---|---|
 | Super + Space | Launcher |
-| Super + Return | Terminal |
+| Super + Return / Ctrl + Alt + T | Terminal |
 | Super + E | Files |
 | Super + B | Browser |
 | Super + Q | Close window |
 | Super + F | Maximize column |
-| Super + H / L | Focus left / right |
+| Super + Shift + F | Fullscreen |
+| Super + H / L | Focus column left / right |
+| Super + J / K | Focus window down / up |
+| Super + 1-9 | Switch workspace |
+| Super + Shift + 1-9 | Move window to workspace |
+| Super + Tab | Next workspace |
+| Super + Shift + L | Lock screen |
 | Super + Shift + / | Keybinds overlay |
 | Super + Shift + S | Settings panel |
-| Super + Shift + L | Lock screen |
+| Super + Shift + P | Monitors off |
+| Super + Shift + E | Quit Niri |
 | Print | Screenshot region |
-
-## Structure
-
-```
-install.sh          Main installer
-lib/                Installer modules
-packages/           Package manifests (one category per file)
-configs/            Configs deployed to ~/.config/
-dotfiles/           Home directory dotfiles (.bashrc, .bash_profile)
-services/           runit services to enable
-scripts/            Post-install utilities (update, reset-config, wallpaper, set-theme)
-themes/             Tomorrow color variants for Quickshell and Alacritty
-wallpapers/         Default wallpaper
-```
+| Shift + Print | Screenshot screen |
+| Ctrl + Print | Screenshot window |
 
 ## Stack
 
-| Purpose | Default |
+| Purpose | Package |
 |---|---|
 | Compositor | Niri |
 | Desktop shell | Quickshell |
@@ -159,16 +137,32 @@ wallpapers/         Default wallpaper
 | Text editor | Mousepad |
 | Code editor | Zed |
 | JS/TS runtime | Bun |
-| Office | LibreOffice |
-| Media | mpv |
+| Office suite | LibreOffice |
+| Media player | mpv |
 | Gaming | Steam + Proton |
-| App store | Bazaar (Flatpak) |
-| Package GUI | OctoXBPS (XBPS) |
+| Flatpak GUI | Bazaar |
+| XBPS GUI | OctoXBPS |
 | Audio | PipeWire + WirePlumber |
-| Network | NetworkManager |
+| Networking | NetworkManager |
 | Bluetooth | BlueZ + Blueman |
+| Prompt | Starship |
+| Shell enhancements | fzf, zoxide, bat, eza, ripgrep, fd |
+
+## Repository structure
+
+```
+install.sh          Main installer (run this)
+lib/                Installer library modules
+packages/           Package manifests by category
+configs/            Configs deployed to ~/.config/
+dotfiles/           Home dotfiles (.bashrc, .bash_profile)
+services/           runit services to enable
+scripts/            Post-install tools (update, reset-config, wallpaper, set-theme)
+themes/             Tomorrow color variants for Quickshell + Alacritty
+wallpapers/         Default wallpaper
+```
 
 ## Theme
 
-Tomorrow Night Eighties palette. Primary accent: `#ffcc66` (yellow).
-Switch variants with `set-theme` or via the settings panel (Super + Shift + S).
+Tomorrow Night Eighties palette. Primary accent: `#ffcc66` (yellow).  
+The TTY, ly login screen, terminal, and desktop shell all use the same palette.

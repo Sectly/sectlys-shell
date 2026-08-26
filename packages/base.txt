@@ -14,7 +14,7 @@ adwaita-icon-theme
 gnome-themes-extra
 gtk+3
 gtk4
-libappindicator
+libdbusmenu
 libnotify
 notification-daemon
 seatd

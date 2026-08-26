@@ -1,0 +1,57 @@
+[window]
+padding = { x = 12, y = 10 }
+decorations = "None"
+opacity = 1.0
+dynamic_title = true
+
+[scrolling]
+history = 10000
+
+[font]
+normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
+bold   = { family = "JetBrainsMono Nerd Font", style = "Bold" }
+italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
+size   = 12.0
+
+[cursor]
+style   = { shape = "Block", blinking = "On" }
+blink_interval = 500
+
+# Tomorrow Night Eighties
+[colors.primary]
+background = "#2d2d2d"
+foreground = "#cccccc"
+
+[colors.cursor]
+text   = "#2d2d2d"
+cursor = "#ffcc66"
+
+[colors.selection]
+text       = "#2d2d2d"
+background = "#ffcc66"
+
+[colors.normal]
+black   = "#2d2d2d"
+red     = "#f2777a"
+green   = "#99cc99"
+yellow  = "#ffcc66"
+blue    = "#6699cc"
+magenta = "#cc99cc"
+cyan    = "#66cccc"
+white   = "#cccccc"
+
+[colors.bright]
+black   = "#999999"
+red     = "#f2777a"
+green   = "#99cc99"
+yellow  = "#ffcc66"
+blue    = "#6699cc"
+magenta = "#cc99cc"
+cyan    = "#66cccc"
+white   = "#ffffff"
+
+[bell]
+duration = 0
+
+[env]
+TERM = "xterm-256color"

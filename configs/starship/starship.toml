@@ -1,0 +1,58 @@
+# Sectly's Shell - Starship prompt (Tomorrow Night + yellow accent)
+
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """
+$directory$git_branch$git_status$cmd_duration
+$character"""
+
+[character]
+success_symbol = "[❯](bold #f0c674)"
+error_symbol   = "[❯](bold #cc6666)"
+
+[directory]
+style            = "bold #81a2be"
+truncation_length = 4
+truncate_to_repo = true
+
+[git_branch]
+format = " [on](fg:#969896) [$symbol$branch](bold #b294bb)"
+symbol = " "
+
+[git_status]
+format    = "[ $all_status$ahead_behind]($style)"
+style     = "#cc6666"
+conflicted = "="
+ahead      = "⇡${count}"
+behind     = "⇣${count}"
+diverged   = "⇕⇡${ahead_count}⇣${behind_count}"
+untracked  = "?"
+stashed    = "$"
+modified   = "!"
+staged     = "+"
+renamed    = "»"
+deleted    = "✘"
+
+[cmd_duration]
+min_time = 2000
+format   = " [took $duration](fg:#969896)"
+
+[python]
+format = " [$symbol$version]($style)"
+style  = "#b5bd68"
+
+[nodejs]
+format = " [$symbol$version]($style)"
+style  = "#b5bd68"
+
+[rust]
+format = " [$symbol$version]($style)"
+style  = "#de935f"
+
+[golang]
+format = " [$symbol$version]($style)"
+style  = "#8abeb7"
+
+[package]
+format = " [$symbol$version]($style)"
+style  = "#969896"

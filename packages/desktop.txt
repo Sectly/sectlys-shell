@@ -1,0 +1,89 @@
+# Wayland compositor and desktop shell
+niri
+quickshell
+alacritty
+
+# Display manager
+ly
+
+# Audio
+pipewire
+wireplumber
+pipewire-pulse
+pipewire-alsa
+pipewire-jack
+alsa-utils
+pavucontrol
+
+# Networking
+NetworkManager
+NetworkManager-openvpn
+network-manager-applet
+
+# Bluetooth
+bluez
+blueman
+
+# Wayland utilities
+wl-clipboard
+cliphist
+grim
+slurp
+swappy
+wf-recorder
+
+# Screen locking and idle
+swaylock
+swayidle
+
+# Wallpaper
+swaybg
+
+# XWayland (X11 app compatibility)
+xwayland
+
+# Media key control
+playerctl
+
+# Night light
+wlsunset
+
+# Credential storage
+gnome-keyring
+libsecret
+
+# Virtual camera (screen sharing in browsers)
+v4l2loopback
+
+# Brightness and power
+brightnessctl
+UPower
+acpid
+
+# Storage / file system integration
+udisks2
+gvfs
+gvfs-mtp
+gvfs-smb
+ntfs-3g
+fuse3
+
+# XDG portals
+xdg-desktop-portal
+xdg-desktop-portal-gtk
+xdg-desktop-portal-wlr
+
+# Polkit authentication agent
+lxqt-policykit
+
+# Printing
+cups
+cups-pdf
+system-config-printer
+
+# Scanning
+sane
+simple-scan
+
+# Clipboard daemon
+wl-clipboard

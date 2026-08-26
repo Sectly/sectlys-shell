@@ -1,0 +1,32 @@
+# Tomorrow Night Blue
+[colors.primary]
+background = "#002451"
+foreground = "#ffffff"
+
+[colors.cursor]
+text   = "#002451"
+cursor = "#ffeead"
+
+[colors.selection]
+text       = "#002451"
+background = "#ffeead"
+
+[colors.normal]
+black   = "#002451"
+red     = "#ff9da4"
+green   = "#d1f1a9"
+yellow  = "#ffeead"
+blue    = "#bbdaff"
+magenta = "#ebbbff"
+cyan    = "#99ffff"
+white   = "#ffffff"
+
+[colors.bright]
+black   = "#7285b7"
+red     = "#ff9da4"
+green   = "#d1f1a9"
+yellow  = "#ffeead"
+blue    = "#bbdaff"
+magenta = "#ebbbff"
+cyan    = "#99ffff"
+white   = "#ffffff"

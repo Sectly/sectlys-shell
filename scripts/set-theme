@@ -1,0 +1,78 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+THEMES_DIR="$SCRIPT_DIR/themes"
+
+QUICKSHELL_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/quickshell/config/Appearance.qml"
+ALACRITTY_CONF="${XDG_CONFIG_HOME:-$HOME/.config}/alacritty/alacritty.toml"
+CURRENT_FILE="${XDG_CONFIG_HOME:-$HOME/.config}/sectlys-shell/current-theme"
+
+VALID_THEMES=(
+    "tomorrow-night-eighties"
+    "tomorrow-night"
+    "tomorrow"
+    "tomorrow-night-blue"
+    "tomorrow-night-bright"
+)
+
+usage() {
+    echo "Usage: set-theme <theme> | --list"
+    echo ""
+    echo "Themes:"
+    for t in "${VALID_THEMES[@]}"; do
+        local marker=""
+        [[ -f "$CURRENT_FILE" ]] && [[ "$(cat "$CURRENT_FILE")" == "$t" ]] && marker=" (active)"
+        echo "  $t$marker"
+    done
+    exit 0
+}
+
+[[ $# -eq 0 ]] && usage
+[[ "$1" == "--list" || "$1" == "-l" ]] && usage
+
+THEME="$1"
+
+valid=0
+for t in "${VALID_THEMES[@]}"; do
+    [[ "$t" == "$THEME" ]] && valid=1 && break
+done
+[[ $valid -eq 0 ]] && { echo "Unknown theme: $THEME"; echo "Run: set-theme --list"; exit 1; }
+
+THEME_DIR="$THEMES_DIR/$THEME"
+
+if [[ -f "$THEME_DIR/Appearance.qml" ]]; then
+    mkdir -p "$(dirname "$QUICKSHELL_CONF")"
+    cp "$THEME_DIR/Appearance.qml" "$QUICKSHELL_CONF"
+    echo "+ Quickshell: $THEME"
+else
+    echo "! No Appearance.qml for $THEME, skipping Quickshell"
+fi
+
+if [[ -f "$THEME_DIR/alacritty.toml" ]]; then
+    if [[ -f "$ALACRITTY_CONF" ]]; then
+        tmp=$(mktemp)
+        awk '/^\[colors/{found=1} !found{print}' "$ALACRITTY_CONF" > "$tmp"
+        cat "$THEME_DIR/alacritty.toml" >> "$tmp"
+        mv "$tmp" "$ALACRITTY_CONF"
+    else
+        mkdir -p "$(dirname "$ALACRITTY_CONF")"
+        cp "$THEME_DIR/alacritty.toml" "$ALACRITTY_CONF"
+    fi
+    echo "+ Alacritty: $THEME"
+else
+    echo "! No alacritty.toml for $THEME, skipping Alacritty"
+fi
+
+mkdir -p "$(dirname "$CURRENT_FILE")"
+echo "$THEME" > "$CURRENT_FILE"
+
+if pgrep -x quickshell &>/dev/null; then
+    echo "> Reloading Quickshell..."
+    pkill -USR1 quickshell 2>/dev/null || pkill -HUP quickshell 2>/dev/null || \
+        echo "  Could not signal Quickshell, restart it to apply"
+fi
+
+echo ""
+echo "Theme set: $THEME"
+echo "Open a new Alacritty window to see terminal colors."

@@ -1,0 +1,60 @@
+# Networking and downloads
+curl
+wget
+openssh
+traceroute
+bind-utils
+
+# Editors and pagers
+nano
+vim
+less
+
+# File operations
+rsync
+tree
+file
+which
+
+# Search and filtering
+ripgrep
+fd
+fzf
+
+# Data processing
+jq
+
+# Archives
+tar
+gzip
+bzip2
+xz
+zstd
+zip
+unzip
+p7zip
+
+# System monitoring
+btop
+ncdu
+duf
+lsof
+pv
+
+# Shell enhancements (no aliases, just tools)
+bash-completion
+starship
+zoxide
+bat
+eza
+
+# System info
+fastfetch
+
+# Media tools
+yt-dlp
+ImageMagick
+
+# Man pages
+man-db
+man-pages

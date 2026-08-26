@@ -1,0 +1,21 @@
+# Base desktop system components
+sudo
+dbus
+elogind
+polkit
+xdg-utils
+xdg-user-dirs
+shared-mime-info
+desktop-file-utils
+dconf
+gsettings-desktop-schemas
+hicolor-icon-theme
+adwaita-icon-theme
+gnome-themes-extra
+gtk+3
+gtk4
+libappindicator
+libnotify
+notification-daemon
+seatd
+rtkit

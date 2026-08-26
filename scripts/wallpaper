@@ -1,0 +1,207 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+WALLPAPER_DIR="${XDG_PICTURES_DIR:-$HOME/Pictures}/Wallpapers"
+CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/sectlys-shell/wallpapers"
+REPO="DenverCoder1/minimalistic-wallpaper-collection"
+API_URL="https://api.github.com/repos/$REPO/contents/images"
+RAW_BASE="https://raw.githubusercontent.com/$REPO/main/images"
+SETTINGS_DIR="${XDG_CONFIG_HOME:-$HOME/.config}/sectlys-shell"
+
+_die() { echo "x $*" >&2; exit 1; }
+_info() { echo "> $*"; }
+_ok() { echo "+ $*"; }
+
+usage() {
+    cat <<'EOF'
+Usage: wallpaper [command]
+
+Commands:
+  search        Search and download wallpapers (default)
+  set <file>    Set a local wallpaper by filename or full path
+  list          List downloaded wallpapers
+  current       Show the currently active wallpaper
+
+Options:
+  -h, --help    Show this help
+
+Wallpapers are saved to ~/Pictures/Wallpapers/.
+EOF
+    exit 0
+}
+
+_require() {
+    command -v "$1" &>/dev/null || _die "'$1' is required but not installed"
+}
+
+_fetch_index() {
+    local cache_file="$CACHE_DIR/index.json"
+    local cache_age=3600  # seconds before re-fetching
+
+    mkdir -p "$CACHE_DIR"
+
+    if [[ -f "$cache_file" ]]; then
+        local now
+        now=$(date +%s)
+        local mtime
+        mtime=$(stat -c %Y "$cache_file" 2>/dev/null || echo 0)
+        if (( now - mtime < cache_age )); then
+            cat "$cache_file"
+            return
+        fi
+    fi
+
+    _info "Fetching wallpaper index from GitHub..." >&2
+    local data
+    data=$(curl -fsSL "$API_URL") || _die "Could not reach GitHub API. Check your connection."
+    echo "$data" > "$cache_file"
+    echo "$data"
+}
+
+cmd_search() {
+    _require fzf
+    _require curl
+    _require jq
+
+    local index
+    index=$(_fetch_index)
+
+    # Build name list (strip extension for display, keep extension for download)
+    local names
+    names=$(echo "$index" | jq -r '.[].name' | sort) \
+        || _die "Could not parse GitHub API response"
+
+    if [[ -z "$names" ]]; then
+        _die "No wallpapers found in the repository index"
+    fi
+
+    local total
+    total=$(echo "$names" | wc -l)
+
+    echo "> $total wallpapers available. Tab to multi-select, Enter to download" >&2
+    echo "" >&2
+
+    local chosen
+    chosen=$(echo "$names" \
+        | fzf \
+            --multi \
+            --prompt="Search wallpapers > " \
+            --header="Tab = select  Enter = download  Esc = cancel" \
+            --preview="echo 'File: {}'; echo ''; echo 'URL: $RAW_BASE/{}'" \
+            --preview-window="down:3:wrap" \
+            --height=70% \
+            --border=rounded \
+            --color="fg:#cccccc,bg:#2d2d2d,hl:#ffcc66,fg+:#ffffff,bg+:#393939,hl+:#ffcc66,prompt:#ffcc66,pointer:#f2777a,marker:#99cc99,border:#515151" \
+        ) || { echo "Cancelled."; exit 0; }
+
+    [[ -z "$chosen" ]] && { echo "Nothing selected."; exit 0; }
+
+    mkdir -p "$WALLPAPER_DIR"
+
+    local count=0
+    local last_path=""
+    while IFS= read -r name; do
+        [[ -z "$name" ]] && continue
+        local dest="$WALLPAPER_DIR/$name"
+        if [[ -f "$dest" ]]; then
+            _info "Already downloaded: $name"
+        else
+            _info "Downloading: $name"
+            curl -fsSL --progress-bar "$RAW_BASE/$name" -o "$dest" \
+                || { echo "! Failed to download $name, skipping"; continue; }
+            _ok "Saved: $dest"
+        fi
+        last_path="$dest"
+        (( count++ )) || true
+    done <<< "$chosen"
+
+    if [[ "$count" -eq 0 ]]; then
+        echo "Nothing downloaded."
+        exit 0
+    fi
+
+    echo ""
+    _ok "$count wallpaper(s) saved to $WALLPAPER_DIR"
+
+    # Offer to set the wallpaper if exactly one was chosen
+    if [[ "$count" -eq 1 && -n "$last_path" ]]; then
+        echo ""
+        read -rp "  Set '$( basename "$last_path")' as wallpaper now? [Y/n] " _reply
+        case "${_reply,,}" in
+            ""|y|yes) cmd_set "$last_path" ;;
+        esac
+    fi
+}
+
+cmd_set() {
+    local target="$1"
+
+    # Accept bare filename (looks in wallpaper dir) or full path
+    if [[ ! -f "$target" ]]; then
+        local candidate="$WALLPAPER_DIR/$target"
+        [[ -f "$candidate" ]] || _die "Wallpaper not found: $target"
+        target="$candidate"
+    fi
+
+    target="$(realpath "$target")"
+
+    _info "Setting wallpaper: $target"
+    pkill swaybg 2>/dev/null || true
+    sleep 0.1
+    swaybg -m fill -i "$target" &
+    disown
+
+    # Persist for shell settings panel
+    mkdir -p "$SETTINGS_DIR"
+    echo "$target" > "$SETTINGS_DIR/wallpaper"
+
+    _ok "Wallpaper set"
+}
+
+cmd_list() {
+    mkdir -p "$WALLPAPER_DIR"
+    local files
+    files=$(find "$WALLPAPER_DIR" -maxdepth 1 -type f \( -iname '*.png' -o -iname '*.jpg' -o -iname '*.jpeg' -o -iname '*.webp' \) | sort)
+
+    if [[ -z "$files" ]]; then
+        echo "No wallpapers in $WALLPAPER_DIR"
+        echo "Run 'wallpaper search' to download some."
+        exit 0
+    fi
+
+    local current=""
+    [[ -f "$SETTINGS_DIR/wallpaper" ]] && current=$(cat "$SETTINGS_DIR/wallpaper")
+
+    echo "Wallpapers in $WALLPAPER_DIR:"
+    echo ""
+    while IFS= read -r f; do
+        local marker=""
+        [[ "$f" == "$current" ]] && marker="  (active)"
+        echo "  $(basename "$f")$marker"
+    done <<< "$files"
+}
+
+cmd_current() {
+    if [[ -f "$SETTINGS_DIR/wallpaper" ]]; then
+        local p
+        p=$(cat "$SETTINGS_DIR/wallpaper")
+        echo "Active wallpaper: $p"
+    else
+        echo "No wallpaper set via this tool."
+        echo "(Wallpaper may have been set by the installer.)"
+    fi
+}
+
+# --- dispatch ---
+
+case "${1:-search}" in
+    search|"")   cmd_search ;;
+    set)
+        [[ $# -ge 2 ]] || _die "Usage: wallpaper set <filename>"
+        cmd_set "$2"
+        ;;
+    list)        cmd_list ;;
+    current)     cmd_current ;;
+    -h|--help)   usage ;;
+    *)           _die "Unknown command: $1  (run 'wallpaper --help')" ;;
+esac

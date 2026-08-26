@@ -1,0 +1,195 @@
+// Sectly's Shell - Niri configuration
+
+input {
+    keyboard {
+        xkb {
+            // Set your layout here, e.g. layout "gb"
+            layout "us"
+        }
+        repeat-delay 300
+        repeat-rate 50
+    }
+
+    touchpad {
+        tap
+        dwt
+        natural-scroll
+        accel-speed 0.2
+        accel-profile "adaptive"
+    }
+
+    mouse {
+        accel-profile "flat"
+    }
+}
+
+output "eDP-1" {
+    scale 1.0
+}
+
+layout {
+    gaps 8
+    center-focused-column "never"
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+    default-column-width { proportion 0.5; }
+    focus-ring {
+        width 2
+        active-color "#f0c674"
+        inactive-color "#373b41"
+    }
+    border {
+        off
+    }
+}
+
+// Wallpaper
+spawn-at-startup "swaybg" "-m" "fill" "-i" "/usr/share/sectlys-shell/wallpapers/default.png"
+
+// Spawn Quickshell as the desktop shell
+spawn-at-startup "quickshell"
+
+// Polkit authentication agent
+spawn-at-startup "lxqt-policykit-agent"
+
+// PipeWire session
+spawn-at-startup "pipewire"
+spawn-at-startup "wireplumber"
+spawn-at-startup "pipewire-pulse"
+
+// Network tray applet
+spawn-at-startup "nm-applet" "--indicator"
+
+// Idle and screen lock
+spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f -c 2d2d2d" "timeout" "600" "niri msg action power-off-monitors" "resume" "niri msg action power-on-monitors" "before-sleep" "swaylock -f -c 2d2d2d"
+
+// Credential storage
+spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets,pkcs11"
+
+// OctoXBPS update notifier
+spawn-at-startup "octoxbps-notifier"
+
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot_%Y-%m-%d_%H-%M-%S.png"
+
+animations {
+    slowdown 1.0
+}
+
+window-rule {
+    geometry-corner-radius 8
+    clip-to-geometry true
+}
+
+// Float small utility windows
+window-rule {
+    match app-id="pavucontrol"
+    match app-id="blueman-manager"
+    match app-id="nm-connection-editor"
+    match app-id="lxqt-policykit-agent"
+    open-floating true
+}
+
+// Float file picker dialogs
+window-rule {
+    match is-dialog true
+    open-floating true
+}
+
+binds {
+    // Applications
+    Ctrl+Alt+T { spawn "alacritty"; }
+    Super+Return { spawn "alacritty"; }
+    Super+E { spawn "nautilus"; }
+    Super+B { spawn "helium"; }
+
+    // Launcher (Quickshell exposes its own launcher)
+    Super+Space { spawn "qs" "-f" "launcher"; }
+
+    // Window management
+    Super+Q { close-window; }
+    Super+F { maximize-column; }
+    Super+Shift+F { fullscreen-window; }
+
+    // Focus movement
+    Super+H { focus-column-left; }
+    Super+L { focus-column-right; }
+    Super+J { focus-window-down; }
+    Super+K { focus-window-up; }
+    Super+Left  { focus-column-left; }
+    Super+Right { focus-column-right; }
+    Super+Up    { focus-window-up; }
+    Super+Down  { focus-window-down; }
+
+    // Move windows
+    Super+Shift+H { move-column-left; }
+    Super+Shift+L { move-column-right; }
+    Super+Shift+J { move-window-down; }
+    Super+Shift+K { move-window-up; }
+    Super+Shift+Left  { move-column-left; }
+    Super+Shift+Right { move-column-right; }
+
+    // Workspace switching
+    Super+1 { focus-workspace 1; }
+    Super+2 { focus-workspace 2; }
+    Super+3 { focus-workspace 3; }
+    Super+4 { focus-workspace 4; }
+    Super+5 { focus-workspace 5; }
+    Super+6 { focus-workspace 6; }
+    Super+7 { focus-workspace 7; }
+    Super+8 { focus-workspace 8; }
+    Super+9 { focus-workspace 9; }
+
+    // Move window to workspace
+    Super+Shift+1 { move-window-to-workspace 1; }
+    Super+Shift+2 { move-window-to-workspace 2; }
+    Super+Shift+3 { move-window-to-workspace 3; }
+    Super+Shift+4 { move-window-to-workspace 4; }
+    Super+Shift+5 { move-window-to-workspace 5; }
+    Super+Shift+6 { move-window-to-workspace 6; }
+    Super+Shift+7 { move-window-to-workspace 7; }
+    Super+Shift+8 { move-window-to-workspace 8; }
+    Super+Shift+9 { move-window-to-workspace 9; }
+
+    Super+Tab       { focus-workspace-down; }
+    Super+Shift+Tab { focus-workspace-up; }
+
+    // Column width
+    Super+Minus { set-column-width "-10%"; }
+    Super+Equal { set-column-width "+10%"; }
+    Super+R     { switch-preset-column-width; }
+
+    // Screenshots
+    Print            { screenshot; }
+    Shift+Print      { screenshot-screen; }
+    Ctrl+Print       { screenshot-window; }
+
+    // Lock
+    Super+Shift+L { spawn "swaylock" "-f" "-c" "2d2d2d"; }
+
+    // Keybinds overlay
+    Super+Shift+Slash { spawn "qs" "ipc" "call" "keybinds" "toggle"; }
+
+    // Settings panel
+    Super+Shift+S { spawn "qs" "ipc" "call" "settings" "toggle"; }
+
+    // Media keys
+    XF86AudioRaiseVolume  { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }
+    XF86AudioLowerVolume  { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%-"; }
+    XF86AudioMute         { spawn "wpctl" "set-mute"   "@DEFAULT_AUDIO_SINK@" "toggle"; }
+    XF86AudioMicMute      { spawn "wpctl" "set-mute"   "@DEFAULT_AUDIO_SOURCE@" "toggle"; }
+    XF86MonBrightnessUp   { spawn "brightnessctl" "set" "5%+"; }
+    XF86MonBrightnessDown { spawn "brightnessctl" "set" "5%-"; }
+    XF86AudioPlay  { spawn "playerctl" "play-pause"; }
+    XF86AudioNext  { spawn "playerctl" "next"; }
+    XF86AudioPrev  { spawn "playerctl" "previous"; }
+
+    // Niri internals
+    Super+Shift+E { quit; }
+    Super+Shift+P { power-off-monitors; }
+}

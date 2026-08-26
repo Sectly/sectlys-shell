@@ -1,0 +1,21 @@
+# Version control
+git
+git-lfs
+
+# Build tools
+gcc
+make
+pkg-config
+cmake
+meson
+ninja
+
+# Languages
+python3
+python3-pip
+
+# Remote access
+openssh
+
+# Containers / misc dev tools
+podman

@@ -1,0 +1,14 @@
+# Noto family (broad Unicode coverage)
+noto-fonts-ttf
+noto-fonts-cjk
+noto-fonts-emoji
+
+# Compatibility fonts (Office documents, web)
+liberation-fonts-ttf
+dejavu-fonts-ttf
+
+# Monospace / terminal
+JetBrainsMono-ttf
+
+# Icon fonts
+font-awesome6

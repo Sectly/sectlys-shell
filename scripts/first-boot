@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+echo "Welcome to Sectly's Shell"
+echo ""
+echo "Your desktop is ready."
+echo ""
+echo "  Software:  Bazaar (Flatpak) / OctoXBPS (XBPS)"
+echo "  Files:     Nautilus"
+echo "  Web:       Helium"
+echo "  Terminal:  Alacritty  (Ctrl+Alt+T)"
+echo "  Editor:    Zed"
+echo ""
+echo "Run 'sudo ./scripts/update' to update all packages."
+echo "Run 'sudo ./scripts/reset-config' to restore default configs."
+echo "Run './scripts/set-theme --list' to switch themes."

@@ -1,0 +1,25 @@
+# runit services to enable
+# Format: one service name per line
+# These are symlinked from /etc/sv/<name> to /var/service/<name>
+
+# Core system
+dbus
+elogind
+seatd
+
+# Networking
+NetworkManager
+NetworkManager-dispatcher
+
+# Bluetooth
+bluetoothd
+
+# Display manager
+ly
+
+# Printing
+cupsd
+
+# Power
+acpid
+tlp

@@ -1,0 +1,77 @@
+[Default Applications]
+# Web
+x-scheme-handler/http=helium.desktop
+x-scheme-handler/https=helium.desktop
+x-scheme-handler/ftp=helium.desktop
+text/html=helium.desktop
+
+# PDF / Documents
+application/pdf=papers.desktop
+application/oxps=papers.desktop
+application/epub+zip=papers.desktop
+
+# Images
+image/png=loupe.desktop
+image/jpeg=loupe.desktop
+image/gif=loupe.desktop
+image/webp=loupe.desktop
+image/avif=loupe.desktop
+image/bmp=loupe.desktop
+image/tiff=loupe.desktop
+image/svg+xml=loupe.desktop
+
+# Video
+video/mp4=mpv.desktop
+video/x-matroska=mpv.desktop
+video/webm=mpv.desktop
+video/avi=mpv.desktop
+video/quicktime=mpv.desktop
+video/x-msvideo=mpv.desktop
+video/mpeg=mpv.desktop
+
+# Audio
+audio/mpeg=mpv.desktop
+audio/flac=mpv.desktop
+audio/ogg=mpv.desktop
+audio/wav=mpv.desktop
+audio/x-wav=mpv.desktop
+audio/aac=mpv.desktop
+audio/opus=mpv.desktop
+
+# Text
+text/plain=mousepad.desktop
+text/markdown=mousepad.desktop
+text/x-readme=mousepad.desktop
+
+# Office documents
+application/vnd.oasis.opendocument.text=libreoffice-writer.desktop
+application/vnd.oasis.opendocument.spreadsheet=libreoffice-calc.desktop
+application/vnd.oasis.opendocument.presentation=libreoffice-impress.desktop
+application/msword=libreoffice-writer.desktop
+application/vnd.openxmlformats-officedocument.wordprocessingml.document=libreoffice-writer.desktop
+application/vnd.ms-excel=libreoffice-calc.desktop
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet=libreoffice-calc.desktop
+application/vnd.ms-powerpoint=libreoffice-impress.desktop
+application/vnd.openxmlformats-officedocument.presentationml.presentation=libreoffice-impress.desktop
+
+# Archives
+application/zip=file-roller.desktop
+application/x-tar=file-roller.desktop
+application/x-compressed-tar=file-roller.desktop
+application/x-bzip2-compressed-tar=file-roller.desktop
+application/x-xz-compressed-tar=file-roller.desktop
+application/x-7z-compressed=file-roller.desktop
+application/x-rar=file-roller.desktop
+application/gzip=file-roller.desktop
+
+# File manager
+inode/directory=nautilus.desktop
+
+[Added Associations]
+x-scheme-handler/http=helium.desktop
+x-scheme-handler/https=helium.desktop
+image/png=loupe.desktop
+image/jpeg=loupe.desktop
+video/mp4=mpv.desktop
+audio/mpeg=mpv.desktop
+application/pdf=papers.desktop

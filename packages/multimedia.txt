@@ -1,0 +1,29 @@
+# GStreamer core and plugins
+gstreamer1
+gst-plugins-base1
+gst-plugins-good1
+gst-plugins-bad1
+gst-plugins-ugly1
+gst-libav1
+
+# FFmpeg
+ffmpeg
+
+# Codec libraries
+libvpx
+libaom
+libdav1d
+x264
+x265
+libopus
+libvorbis
+
+# Thumbnail support for Nautilus
+ffmpegthumbnailer
+evince-thumbnailer
+
+# JPEG / image codecs
+libjpeg-turbo
+libpng
+libwebp
+libavif

@@ -1,0 +1,51 @@
+# Web browser (default XBPS repo)
+helium
+
+# File management
+nautilus
+nautilus-sendto
+file-roller
+gvfs
+
+# Terminal
+alacritty
+
+# Text editors
+mousepad
+zed
+
+# Office suite
+libreoffice
+libreoffice-calc
+libreoffice-impress
+libreoffice-writer
+
+# Document viewer
+papers
+
+# Image viewer
+loupe
+
+# Media player
+mpv
+
+# Package management GUI
+octoxbps
+octoxbps-notifier
+
+# Flatpak GUI (from voiders.dev)
+bazaar
+
+# Audio control
+pavucontrol
+
+# Bluetooth GUI
+blueman
+
+# Calculator
+gnome-calculator
+
+# Archive formats support
+p7zip
+unzip
+zip

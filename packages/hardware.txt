@@ -1,0 +1,33 @@
+# Firmware
+linux-firmware
+
+# Firmware update
+fwupd
+
+# CPU microcode
+intel-ucode
+void-repo-nonfree
+
+# Sensors and power
+acpi
+lm_sensors
+tlp
+tlp-rdw
+
+# Bluetooth firmware
+bluez-firmware
+
+# Touchpad
+libinput
+
+# Hardware video acceleration
+libva-mesa-driver
+mesa-vaapi
+intel-media-driver
+libva-utils
+
+# Printer drivers
+foomatic-db
+foomatic-db-ppds
+gutenprint
+hplip

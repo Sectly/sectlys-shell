@@ -1,0 +1,52 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+
+source "$SCRIPT_DIR/lib/logging.sh"
+source "$SCRIPT_DIR/lib/users.sh"
+
+[[ "$EUID" -eq 0 ]] || { echo "Run as root: sudo ./scripts/reset-config"; exit 1; }
+
+detect_user
+
+CONFIGS_DIR="$SCRIPT_DIR/configs"
+DOTFILES_DIR="$SCRIPT_DIR/dotfiles"
+BACKUP_DIR="$TARGET_HOME/.config/sectlys-shell-backup/$(date +%Y%m%d-%H%M%S)"
+
+backup_and_replace() {
+    local src="$1"
+    local dst="$2"
+
+    if [[ -e "$dst" ]] && ! diff -rq "$src" "$dst" &>/dev/null; then
+        mkdir -p "$(dirname "$BACKUP_DIR/$dst")"
+        cp -r "$dst" "$BACKUP_DIR/$(basename "$dst")"
+        info "Backed up: $(basename "$dst")"
+    fi
+
+    mkdir -p "$(dirname "$dst")"
+    cp -r "$src" "$dst"
+}
+
+echo "=== Sectly's Shell - Reset Config ==="
+echo "  Target user: $TARGET_USER"
+echo "  Backup dir:  $BACKUP_DIR"
+echo ""
+
+for config in niri alacritty mpv quickshell starship; do
+    src="$CONFIGS_DIR/$config"
+    dst="$TARGET_HOME/.config/$config"
+    [[ -d "$src" ]] && backup_and_replace "$src/." "$dst"
+done
+
+for dotfile in "$DOTFILES_DIR"/.*; do
+    [[ -f "$dotfile" ]] || continue
+    fname=$(basename "$dotfile")
+    backup_and_replace "$dotfile" "$TARGET_HOME/$fname"
+done
+
+chown -R "$TARGET_USER:$TARGET_USER" "$TARGET_HOME/.config" "$TARGET_HOME/.bashrc" "$TARGET_HOME/.bash_profile" 2>/dev/null || true
+
+echo ""
+echo "+ Config reset complete"
+[[ -d "$BACKUP_DIR" ]] && echo "  Backups saved to: $BACKUP_DIR"

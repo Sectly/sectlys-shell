@@ -11,6 +11,14 @@ export GDK_BACKEND=wayland
 export SDL_VIDEODRIVER=wayland
 export XDG_SESSION_TYPE=wayland
 
+# Ensure XDG_RUNTIME_DIR exists - elogind PAM may not create it on Void
+uid=$(id -u)
+export XDG_RUNTIME_DIR="/run/user/${uid}"
+if [[ ! -d "$XDG_RUNTIME_DIR" ]]; then
+    mkdir -p "$XDG_RUNTIME_DIR"
+    chmod 700 "$XDG_RUNTIME_DIR"
+fi
+
 niri-session "$@"
 exit_code=$?
 

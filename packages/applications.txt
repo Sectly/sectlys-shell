@@ -1,5 +1,5 @@
 # Web browser (default XBPS repo)
-helium
+helium-browser
 
 # File management
 nautilus

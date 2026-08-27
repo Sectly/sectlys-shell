@@ -3,6 +3,11 @@ niri
 quickshell
 alacritty
 
+# Qt Wayland backend (required for Quickshell)
+qt6-wayland
+qt6-base
+qt6ct
+
 # Display manager
 ly
 

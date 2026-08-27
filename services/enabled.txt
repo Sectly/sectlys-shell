@@ -5,7 +5,6 @@
 # Core system
 dbus
 elogind
-seatd
 
 # Networking
 NetworkManager

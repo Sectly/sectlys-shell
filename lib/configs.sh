@@ -253,24 +253,6 @@ EOF
         info "Created $pam_ly with elogind session"
     fi
 
-    # Patch ly's runit run script to wait for seatd and dbus before starting
-    local ly_run="/etc/sv/ly/run"
-    if [[ -f "$ly_run" ]] && ! grep -q "sv check seatd" "$ly_run"; then
-        local tmp
-        tmp=$(mktemp)
-        head -1 "$ly_run" > "$tmp"  # preserve shebang
-        cat >> "$tmp" <<'EOF'
-
-# Wait for seatd and dbus to be ready before ly claims the TTY
-sv check seatd >/dev/null 2>&1 || { sleep 1; exec "$0"; }
-sv check dbus  >/dev/null 2>&1 || { sleep 1; exec "$0"; }
-EOF
-        tail -n +2 "$ly_run" >> "$tmp"
-        install -m 755 "$tmp" "$ly_run"
-        rm -f "$tmp"
-        info "Patched ly run script to wait for seatd/dbus"
-    fi
-
     success "ly configured"
 }
 

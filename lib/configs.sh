@@ -200,13 +200,12 @@ _configure_ly() {
     # Modern ly (the current Void package) writes config.lua to /etc/ly after install.
     # Older versions wrote config.ini. Fall back to config.lua on ambiguity.
     if [[ -f "$ly_dir/config.ini" ]] && [[ ! -f "$ly_dir/config.lua" ]]; then
-        if [[ -f "$src_dir/config.ini" ]]; then
-            cp "$src_dir/config.ini" "$ly_dir/config.ini" || die "Failed to deploy ly config.ini"
-            info "Deployed ly config.ini (legacy ly)"
-        else
-            warn "Legacy ly detected but configs/ly/config.ini not found, skipping config deploy"
-        fi
+        # Legacy ly (config.ini format)
+        [[ -f "$src_dir/config.ini" ]] || die "configs/ly/config.ini not found"
+        cp "$src_dir/config.ini" "$ly_dir/config.ini" || die "Failed to deploy ly config.ini"
+        info "Deployed ly config.ini (legacy ly)"
     else
+        # Modern ly (config.lua format)
         [[ -f "$src_dir/config.lua" ]] || die "configs/ly/config.lua not found"
         cp "$src_dir/config.lua" "$ly_dir/config.lua" || die "Failed to deploy ly config.lua"
         info "Deployed ly config.lua"

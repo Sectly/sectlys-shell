@@ -165,7 +165,7 @@ binds {
     Ctrl+Print       { screenshot-window; }
 
     // Lock
-    Super+Shift+L { spawn "swaylock" "-f" "-c" "2d2d2d"; }
+    Super+Alt+L { spawn "swaylock" "-f" "-c" "2d2d2d"; }
 
     // Keybinds overlay
     Super+Shift+Slash { spawn "qs" "ipc" "call" "keybinds" "toggle"; }

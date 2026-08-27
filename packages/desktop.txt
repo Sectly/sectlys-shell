@@ -39,7 +39,7 @@ swayidle
 swaybg
 
 # XWayland (X11 app compatibility)
-xwayland
+xorg-server-xwayland
 
 # Media key control
 playerctl

@@ -9,9 +9,8 @@ ly
 # Audio
 pipewire
 wireplumber
-pipewire-pulse
-pipewire-alsa
-pipewire-jack
+alsa-pipewire
+libjack-pipewire
 alsa-utils
 pavucontrol
 

@@ -104,7 +104,7 @@ binds {
     Super+B { spawn "helium"; }
 
     // Launcher
-    Super+Space { spawn "qs" "ipc" "call" "launcher" "toggle"; }
+    Super+Space { spawn "sh" "-c" "date +%s > /tmp/qs-ipc/launcher"; }
 
     // Window management
     Super+Q { close-window; }
@@ -170,10 +170,10 @@ binds {
     Super+Alt+L { spawn "swaylock" "-f" "-c" "2d2d2d"; }
 
     // Keybinds overlay
-    Super+Shift+Slash { spawn "qs" "ipc" "call" "keybinds" "toggle"; }
+    Super+Shift+Slash { spawn "sh" "-c" "date +%s > /tmp/qs-ipc/keybinds"; }
 
     // Settings panel
-    Super+Shift+S { spawn "qs" "ipc" "call" "settings" "toggle"; }
+    Super+Shift+S { spawn "sh" "-c" "date +%s > /tmp/qs-ipc/settings"; }
 
     // Media keys
     XF86AudioRaiseVolume  { spawn "wpctl" "set-volume" "@DEFAULT_AUDIO_SINK@" "5%+"; }

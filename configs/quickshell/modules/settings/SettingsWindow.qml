@@ -21,9 +21,12 @@ PanelWindow {
     implicitHeight: panel.implicitHeight + Appearance.spacing.large * 2
     color: "transparent"
 
-    IpcHandler {
-        target: "settings"
-        function toggle() { root.visible = !root.visible; }
+    FileView {
+        path: "/tmp/qs-ipc/settings"
+        watchChanges: true
+        property bool initialized: false
+        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
+        onTextChanged: if (initialized) root.visible = !root.visible
     }
 
     Keys.onEscapePressed: root.visible = false

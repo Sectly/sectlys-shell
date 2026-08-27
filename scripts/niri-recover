@@ -34,6 +34,10 @@ done
 
 mkdir -p "$HOME/.local/state"
 
+# Create IPC signal files for quickshell panel toggles
+mkdir -p /tmp/qs-ipc
+touch /tmp/qs-ipc/launcher /tmp/qs-ipc/clipboard /tmp/qs-ipc/keybinds /tmp/qs-ipc/settings /tmp/qs-ipc/powermenu
+
 dbus-run-session "$NIRI_BIN" "$@"
 exit_code=$?
 

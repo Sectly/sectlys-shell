@@ -3,6 +3,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import QtQuick.Layouts
 import Quickshell
+import Quickshell.Io
 
 import qs.components
 import qs.config
@@ -21,11 +22,12 @@ PanelWindow {
     focusable: true
     color: "transparent"
 
-    IpcHandler {
-        target: "keybinds"
-        function toggle() {
-            root.visible = !root.visible;
-        }
+    FileView {
+        path: "/tmp/qs-ipc/keybinds"
+        watchChanges: true
+        property bool initialized: false
+        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
+        onTextChanged: if (initialized) root.visible = !root.visible
     }
 
     Keys.onEscapePressed: root.visible = false

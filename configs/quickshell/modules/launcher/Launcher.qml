@@ -101,33 +101,25 @@ PanelWindow {
         }
     }
 
-    IpcHandler {
-        target: "launcher"
-
-        function toggle() {
-            if (root.visible)
-                root.closeLauncher();
-            else
-                root.openLauncher("apps");
+    FileView {
+        path: "/tmp/qs-ipc/launcher"
+        watchChanges: true
+        property bool initialized: false
+        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
+        onTextChanged: if (initialized) {
+            if (root.visible) root.closeLauncher()
+            else root.openLauncher("apps")
         }
     }
 
-    IpcHandler {
-        target: "clipboard"
-
-        function toggle() {
-            if (root.visible)
-                root.closeLauncher();
-            else
-                root.openLauncher("clipboard");
-        }
-
-        function open() {
-            root.openLauncher("clipboard");
-        }
-
-        function close() {
-            root.closeLauncher();
+    FileView {
+        path: "/tmp/qs-ipc/clipboard"
+        watchChanges: true
+        property bool initialized: false
+        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
+        onTextChanged: if (initialized) {
+            if (root.visible) root.closeLauncher()
+            else root.openLauncher("clipboard")
         }
     }
 

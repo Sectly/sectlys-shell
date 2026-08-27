@@ -40,7 +40,8 @@ mkdir -p "$HOME/.local/state"
 mkdir -p /tmp/qs-ipc
 touch /tmp/qs-ipc/launcher /tmp/qs-ipc/clipboard /tmp/qs-ipc/keybinds /tmp/qs-ipc/settings /tmp/qs-ipc/powermenu
 
-dbus-run-session "$NIRI_BIN" "$@"
+RUST_LOG="niri=debug,smithay::backend::drm=debug,smithay::backend::libseat=debug" \
+    dbus-run-session "$NIRI_BIN" "$@" 2>/tmp/niri-debug.log
 exit_code=$?
 
 if [[ $exit_code -ne 0 ]]; then

@@ -3,8 +3,7 @@
 # These are symlinked from /etc/sv/<name> to /var/service/<name>
 
 # Core system
-# dbus and elogind are enabled by Void's base install - do not re-enable here
-# as runit will immediately restart them mid-install and cause conflicts
+dbus
 seatd
 
 # Networking

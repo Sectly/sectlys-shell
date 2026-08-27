@@ -23,6 +23,14 @@ if [[ -z "$NIRI_BIN" ]]; then
     exit 1
 fi
 
+# Wait for system D-Bus socket - niri needs it for DisplayConfig/portals
+echo "Waiting for D-Bus..."
+for i in $(seq 1 20); do
+    [[ -S /run/dbus/system_bus_socket ]] && break
+    sleep 0.5
+done
+[[ -S /run/dbus/system_bus_socket ]] || echo "Warning: system D-Bus socket not found, niri may fail"
+
 mkdir -p "$HOME/.local/state"
 
 dbus-run-session "$NIRI_BIN" "$@"

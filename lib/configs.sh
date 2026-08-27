@@ -224,13 +224,16 @@ _configure_ly() {
 
     # Disable agetty on ly's TTY so it doesn't fight ly for input
     local ly_tty
-    ly_tty=$(grep -E '^\s*tty\s*=' "$ly_dir/config.lua" 2>/dev/null | grep -oE '[0-9]+' | head -1)
+    ly_tty=$(grep -E 'tty\s*=' "$ly_dir/config.lua" 2>/dev/null | grep -oE '[0-9]+' | head -1)
     ly_tty=${ly_tty:-2}
     local agetty_sv="/etc/sv/agetty-tty${ly_tty}"
     if [[ -d "$agetty_sv" ]]; then
         touch "$agetty_sv/down"
         sv stop "agetty-tty${ly_tty}" 2>/dev/null || true
-        info "Disabled agetty on tty${ly_tty} (ly's TTY)"
+        rm -f "/var/service/agetty-tty${ly_tty}" 2>/dev/null || true
+        info "Disabled agetty on tty${ly_tty}"
+    else
+        info "No agetty-tty${ly_tty} service found, skipping"
     fi
 
     # Ensure ly PAM config includes elogind session module so XDG_RUNTIME_DIR gets created

@@ -8,9 +8,6 @@ qt6-wayland
 qt6-base
 qt6ct
 
-# QML Niri plugin (required for Quickshell to talk to niri)
-qml-niri
-
 # Display manager
 ly
 

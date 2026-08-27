@@ -8,7 +8,7 @@ liberation-fonts-ttf
 dejavu-fonts-ttf
 
 # Monospace / terminal
-JetBrainsMono-ttf
+nerd-fonts
 
 # Icon fonts
 font-awesome6

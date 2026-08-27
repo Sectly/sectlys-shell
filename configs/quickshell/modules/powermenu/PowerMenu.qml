@@ -47,12 +47,13 @@ PanelWindow {
     }
 
     FileView {
+        id: powermenuIpc
         path: "/tmp/qs-ipc/powermenu"
         watchChanges: true
         property bool initialized: false
-        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
         onTextChanged: if (initialized) Session.toggle()
     }
+    Timer { interval: 200; running: true; repeat: false; onTriggered: powermenuIpc.initialized = true }
 
     Keys.onEscapePressed: Session.close()
 

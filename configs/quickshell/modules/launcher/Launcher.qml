@@ -102,10 +102,10 @@ PanelWindow {
     }
 
     FileView {
+        id: launcherIpc
         path: "/tmp/qs-ipc/launcher"
         watchChanges: true
         property bool initialized: false
-        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
         onTextChanged: if (initialized) {
             if (root.visible) root.closeLauncher()
             else root.openLauncher("apps")
@@ -113,15 +113,17 @@ PanelWindow {
     }
 
     FileView {
+        id: clipboardIpc
         path: "/tmp/qs-ipc/clipboard"
         watchChanges: true
         property bool initialized: false
-        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
         onTextChanged: if (initialized) {
             if (root.visible) root.closeLauncher()
             else root.openLauncher("clipboard")
         }
     }
+
+    Timer { interval: 200; running: true; repeat: false; onTriggered: { launcherIpc.initialized = true; clipboardIpc.initialized = true } }
 
     Rectangle {
         id: frame

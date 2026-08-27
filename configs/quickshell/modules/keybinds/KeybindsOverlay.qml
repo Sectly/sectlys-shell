@@ -23,12 +23,13 @@ PanelWindow {
     color: "transparent"
 
     FileView {
+        id: keybindsIpc
         path: "/tmp/qs-ipc/keybinds"
         watchChanges: true
         property bool initialized: false
-        Timer { interval: 200; running: true; repeat: false; onTriggered: parent.initialized = true }
         onTextChanged: if (initialized) root.visible = !root.visible
     }
+    Timer { interval: 200; running: true; repeat: false; onTriggered: keybindsIpc.initialized = true }
 
     Keys.onEscapePressed: root.visible = false
 

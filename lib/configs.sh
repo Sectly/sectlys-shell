@@ -74,12 +74,8 @@ _deploy_config_dir() {
 
     [[ -d "$src" ]] || { warn "Config dir not found: $src, skipping"; return 0; }
 
-    if [[ -d "$dst" ]] && [[ -n "$(ls -A "$dst" 2>/dev/null)" ]]; then
-        info "$src_name: already deployed, adding new files only"
-    fi
-
     mkdir -p "$dst"
-    cp -rn "$src/." "$dst/"
+    cp -r "$src/." "$dst/"
     success "Deployed: $src_name -> $dst_rel"
 }
 
@@ -90,7 +86,6 @@ _deploy_file() {
     local dst="$TARGET_HOME/$dst_rel"
 
     [[ -f "$src" ]] || { warn "File not found: $src, skipping"; return 0; }
-    [[ -f "$dst" ]] && { info "Skipping existing: $dst_rel"; return 0; }
 
     mkdir -p "$(dirname "$dst")"
     cp "$src" "$dst"
@@ -135,12 +130,8 @@ _deploy_dotfiles() {
         local fname
         fname=$(basename "$src")
         dst="$TARGET_HOME/$fname"
-        if [[ -f "$dst" ]]; then
-            info "Skipping existing: $fname"
-        else
-            cp "$src" "$dst"
-            info "Deployed: $fname"
-        fi
+        cp "$src" "$dst"
+        info "Deployed: $fname"
     done
     success "Dotfiles deployed"
 }

@@ -222,6 +222,17 @@ _configure_ly() {
     install -m 755 "$src_dir/startup.sh"    "$ly_dir/startup.sh"    || die "Failed to install startup.sh"
     install -m 755 "$src_dir/bootsplash.sh" "$ly_dir/bootsplash.sh" || die "Failed to install bootsplash.sh"
 
+    # Disable agetty on ly's TTY so it doesn't fight ly for input
+    local ly_tty
+    ly_tty=$(grep -E '^\s*tty\s*=' "$ly_dir/config.lua" 2>/dev/null | grep -oE '[0-9]+' | head -1)
+    ly_tty=${ly_tty:-2}
+    local agetty_sv="/etc/sv/agetty-tty${ly_tty}"
+    if [[ -d "$agetty_sv" ]]; then
+        touch "$agetty_sv/down"
+        sv stop "agetty-tty${ly_tty}" 2>/dev/null || true
+        info "Disabled agetty on tty${ly_tty} (ly's TTY)"
+    fi
+
     # Ensure ly PAM config includes elogind session module so XDG_RUNTIME_DIR gets created
     local pam_ly="/etc/pam.d/ly"
     if [[ -f "$pam_ly" ]]; then
@@ -240,6 +251,24 @@ session include login
 session optional pam_elogind.so
 EOF
         info "Created $pam_ly with elogind session"
+    fi
+
+    # Patch ly's runit run script to wait for seatd and dbus before starting
+    local ly_run="/etc/sv/ly/run"
+    if [[ -f "$ly_run" ]] && ! grep -q "sv check seatd" "$ly_run"; then
+        local tmp
+        tmp=$(mktemp)
+        head -1 "$ly_run" > "$tmp"  # preserve shebang
+        cat >> "$tmp" <<'EOF'
+
+# Wait for seatd and dbus to be ready before ly claims the TTY
+sv check seatd >/dev/null 2>&1 || { sleep 1; exec "$0"; }
+sv check dbus  >/dev/null 2>&1 || { sleep 1; exec "$0"; }
+EOF
+        tail -n +2 "$ly_run" >> "$tmp"
+        install -m 755 "$tmp" "$ly_run"
+        rm -f "$tmp"
+        info "Patched ly run script to wait for seatd/dbus"
     fi
 
     success "ly configured"

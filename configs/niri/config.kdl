@@ -47,6 +47,9 @@ layout {
     }
 }
 
+// Export Wayland env to D-Bus so portals and activated services can find the display
+spawn-at-startup "sh" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP=niri DISPLAY 2>/dev/null || true"
+
 // Wallpaper
 spawn-at-startup "swaybg" "-m" "fill" "-i" "/usr/share/sectlys-shell/wallpapers/default.png"
 

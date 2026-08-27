@@ -15,17 +15,21 @@ source "$SCRIPT_DIR/lib/users.sh"
 source "$SCRIPT_DIR/lib/configs.sh"
 
 AUTO_YES=0
+NO_NETWORK=0
 
 usage() {
-    echo "Usage: $0 [-y]"
+    echo "Usage: $0 [-y] [-n]"
     echo "  -y   Skip confirmation prompt and install immediately"
+    echo "  -n   Skip network checks and all network operations (repos, packages, flatpak)"
+    echo "       Use this only to redeploy configs on an existing installation."
     exit 0
 }
 
 parse_args() {
-    while getopts ":yh" opt; do
+    while getopts ":ynh" opt; do
         case "$opt" in
             y) AUTO_YES=1 ;;
+            n) NO_NETWORK=1 ;;
             h) usage ;;
             *) die "Unknown option: -$OPTARG  (use -h for help)" ;;
         esac
@@ -70,26 +74,39 @@ main() {
     check_arch
     check_libc
 
-    # Install curl, pv, etc. before anything that needs them
-    bootstrap_installer
+    if [[ "$NO_NETWORK" -eq 1 ]]; then
+        echo ""
+        echo -e "  ${_YELLOW}!${_RESET} ${_BOLD}Offline mode (-n):${_RESET} skipping repos, packages, and flatpak."
+        echo -e "  ${_YELLOW}!${_RESET} Only configs and services will be deployed."
+        echo -e "  ${_YELLOW}!${_RESET} Do not use this for a fresh install — packages will be missing."
+        echo ""
+    else
+        # Install curl, pv, etc. before anything that needs them
+        bootstrap_installer
 
-    # Network check uses curl (now guaranteed present)
-    check_network
+        # Network check uses curl (now guaranteed present)
+        check_network
+    fi
 
     confirm_install
 
     log_section "Detecting target user"
     detect_user
 
-    setup_repositories
-    install_all_packages
-    setup_flatpak
+    if [[ "$NO_NETWORK" -eq 0 ]]; then
+        setup_repositories
+        install_all_packages
+        setup_flatpak
+    fi
+
     deploy_configs
     enable_services
 
-    step "Final system update"
-    run_quiet "Syncing and updating system" xbps-install -Syu \
-        || warn "Final update had warnings, check $LOG_FILE"
+    if [[ "$NO_NETWORK" -eq 0 ]]; then
+        step "Final system update"
+        run_quiet "Syncing and updating system" xbps-install -Syu \
+            || warn "Final update had warnings, check $LOG_FILE"
+    fi
 
     # Register ly - takes effect on next boot
     step "Register ly display manager"

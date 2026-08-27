@@ -230,10 +230,15 @@ _install_scripts() {
 
     mkdir -p "$bin_dst"
 
+    # niri-recover must be in a system PATH so ly can find it when launching the session
+    install -m 755 "$scripts_src/niri-recover" /usr/local/bin/niri-recover \
+        || die "Failed to install niri-recover to /usr/local/bin"
+
     for src in "$scripts_src"/*; do
         [[ -f "$src" ]] || continue
         local name
         name=$(basename "$src")
+        [[ "$name" == "niri-recover" ]] && continue  # already installed system-wide
         local dst="$bin_dst/$name"
         cp "$src" "$dst"
         chmod +x "$dst"

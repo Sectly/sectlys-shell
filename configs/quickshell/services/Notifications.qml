@@ -1,6 +1,7 @@
 pragma Singleton
 
 import QtQuick
+import QtCore
 import Quickshell
 import Quickshell.Io
 import Quickshell.Services.Notifications
@@ -11,7 +12,7 @@ Singleton {
 
     property int maxHistory: 50
     property bool persistenceEnabled: true
-    property string persistencePath: "/home/han/.config/quickshell/notifications.json"
+    property string persistencePath: StandardPaths.writableLocation(StandardPaths.HomeLocation) + "/.config/quickshell/notifications.json"
     property var pendingToasts: []
 
     signal toastQueued(var notification)
@@ -95,7 +96,7 @@ Singleton {
     function loadHistory() {
         try {
             if (historyFile.loaded) {
-                const content = historyFile.text();
+                const content = historyFile.text;
                 if (content && content.length > 0) {
                     const arr = JSON.parse(content);
                     for (let i = 0; i < arr.length; i++) {

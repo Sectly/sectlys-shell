@@ -61,7 +61,7 @@ PanelWindow {
             // Header
             StyledText {
                 text: "Settings"
-                font.pixelSize: Appearance.fontSize.md
+                font.pixelSize: Appearance.fontSize.base
                 font.bold: true
                 color: Appearance.colors.on_surface
             }

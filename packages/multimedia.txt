@@ -4,7 +4,7 @@ gst-plugins-base1
 gst-plugins-good1
 gst-plugins-bad1
 gst-plugins-ugly1
-gst-libav1
+gst-libav
 
 # FFmpeg
 ffmpeg
@@ -12,7 +12,7 @@ ffmpeg
 # Codec libraries
 libvpx
 libaom
-libdav1d
+dav1d
 x264
 x265
 libopus
@@ -20,7 +20,6 @@ libvorbis
 
 # Thumbnail support for Nautilus
 ffmpegthumbnailer
-evince-thumbnailer
 
 # JPEG / image codecs
 libjpeg-turbo

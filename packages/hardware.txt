@@ -12,7 +12,6 @@ void-repo-nonfree
 acpi
 lm_sensors
 tlp
-tlp-rdw
 
 # Bluetooth firmware
 bluez-firmware

@@ -31,7 +31,6 @@ mpv
 
 # Package management GUI
 octoxbps
-octoxbps-notifier
 
 # Flatpak GUI (from voiders.dev)
 bazaar

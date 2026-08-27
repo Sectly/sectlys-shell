@@ -44,14 +44,22 @@ install_manifest() {
         warn "Batch install failed for $label, checking each package..."
         local failed=()
         local ok=0
+        local frames=('/' '-' '\' '|')
+        local fi=0
+        tput civis 2>/dev/null || true
         for pkg in "${pkgs[@]}"; do
+            printf "\r    ${_CYAN}[%s]${_RESET}  ${_DIM}checking %s${_RESET}  " \
+                "${frames[$fi]}" "$pkg"
+            fi=$(( (fi + 1) % 4 ))
             if xbps-install -y "$pkg" >>"$LOG_FILE" 2>&1; then
                 ok=$(( ok + 1 ))
             else
-                error "Package not found or failed to install: ${_BOLD}$pkg${_RESET}"
+                printf "\r    ${_RED}x${_RESET}  %-60s\n" "$pkg -- not found or failed"
                 failed+=("$pkg")
             fi
         done
+        tput cnorm 2>/dev/null || true
+        printf "\r%60s\r" ""
         PKGS_INSTALLED=$(( PKGS_INSTALLED + ok ))
         if [[ ${#failed[@]} -gt 0 ]]; then
             warn "${#failed[@]} package(s) could not be installed: ${failed[*]}"

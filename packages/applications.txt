@@ -3,7 +3,6 @@ helium-browser
 
 # File management
 nautilus
-nautilus-sendto
 file-roller
 gvfs
 
@@ -12,7 +11,6 @@ alacritty
 
 # Text editors
 mousepad
-zed
 
 # Office suite
 libreoffice

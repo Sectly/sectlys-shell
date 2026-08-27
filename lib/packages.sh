@@ -36,11 +36,28 @@ install_manifest() {
 
     [[ $already -gt 0 ]] && info "$label: $already already installed, installing ${#pkgs[@]} new"
 
-    run_quiet "Installing $label (${#pkgs[@]} packages)" \
-        xbps-install -y "${pkgs[@]}" \
-        || die "Failed installing packages from $label"
-
-    PKGS_INSTALLED=$(( PKGS_INSTALLED + ${#pkgs[@]} ))
+    if run_quiet "Installing $label (${#pkgs[@]} packages)" \
+            xbps-install -y "${pkgs[@]}"; then
+        PKGS_INSTALLED=$(( PKGS_INSTALLED + ${#pkgs[@]} ))
+    else
+        # Batch failed - retry one by one to identify which package(s) are broken
+        warn "Batch install failed for $label, checking each package..."
+        local failed=()
+        local ok=0
+        for pkg in "${pkgs[@]}"; do
+            if xbps-install -y "$pkg" >>"$LOG_FILE" 2>&1; then
+                ok=$(( ok + 1 ))
+            else
+                error "Package not found or failed to install: ${_BOLD}$pkg${_RESET}"
+                failed+=("$pkg")
+            fi
+        done
+        PKGS_INSTALLED=$(( PKGS_INSTALLED + ok ))
+        if [[ ${#failed[@]} -gt 0 ]]; then
+            warn "${#failed[@]} package(s) could not be installed: ${failed[*]}"
+            warn "Check $LOG_FILE for details. Continuing..."
+        fi
+    fi
 }
 
 install_morewaita() {

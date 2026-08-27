@@ -53,8 +53,9 @@ setup_repositories() {
         info "voiders.dev already configured, skipping"
     else
         echo "repository=$VOIDERS_URL" > "$VOIDERS_CONF" || die "Failed to write voiders.dev repo config"
-        info "Trusting voiders.dev signing key (fingerprint: a8:f0:05:df:01:c4:37:92:83:f6:8b:9a:ce:ab:73:29)"
-        xbps-install -Sy || warn "voiders.dev sync had warnings, packages from this repo may not install"
+        info "Trusting voiders.dev signing key"
+        # printf 'y\n' auto-answers the RSA key trust prompt from xbps on first sync
+        printf 'y\n' | xbps-install -Sy || warn "voiders.dev sync had warnings, packages from this repo may not install"
         success "voiders.dev configured"
     fi
 

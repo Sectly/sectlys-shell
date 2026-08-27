@@ -37,23 +37,21 @@ confirm_install() {
         return 0
     fi
 
+    echo -e "  ${_BOLD}What this will do:${_RESET}"
+    echo -e "  ${_DIM}  - Enable nonfree/multilib/voiders.dev repositories${_RESET}"
+    echo -e "  ${_DIM}  - Install desktop, application, gaming, and multimedia packages${_RESET}"
+    echo -e "  ${_DIM}  - Deploy configs and dotfiles to the target user's home${_RESET}"
+    echo -e "  ${_DIM}  - Enable system services (ly, NetworkManager, bluetooth, etc.)${_RESET}"
     echo ""
-    echo "  This will install Sectly's Shell on your system."
-    echo "  The following will be performed:"
-    echo "    - Enable nonfree/multilib/voiders.dev repositories"
-    echo "    - Install desktop, application, gaming, and multimedia packages"
-    echo "    - Deploy configs and dotfiles to the target user's home"
-    echo "    - Enable system services (ly, NetworkManager, bluetooth, etc.)"
-    echo ""
-    echo "  ! These changes cannot be undone automatically."
-    echo "  ! It is strongly recommended to make a backup or snapshot"
-    echo "  ! of your system before proceeding."
+    echo -e "  ${_YELLOW}!${_RESET} These changes cannot be undone automatically."
+    echo -e "  ${_YELLOW}!${_RESET} Make a backup or VM snapshot before proceeding."
     echo ""
     read -rp "  Proceed with installation? [y/N] " _reply
     case "${_reply,,}" in
         y|yes) ;;
         *) echo "  Aborted."; exit 0 ;;
     esac
+    echo ""
 }
 
 main() {
@@ -61,9 +59,8 @@ main() {
 
     exec > >(tee -a "$LOG_FILE") 2>&1
 
-    echo ""
-    echo "  Sectly's Shell Installer"
-    echo "  Log: $LOG_FILE"
+    print_banner
+    echo -e "  Log: ${_DIM}$LOG_FILE${_RESET}"
     echo ""
 
     # OS/arch/libc checks require no external tools
@@ -98,8 +95,7 @@ main() {
     step "Installation complete"
 
     echo ""
-    echo "  Sectly's Shell installation complete."
-    echo "  Your system is ready."
+    echo -e "  ${_GREEN}${_BOLD}Installation complete.${_RESET} Your system is ready."
     echo ""
 
     read -rp "  Reboot now? [Y/n] " _reply

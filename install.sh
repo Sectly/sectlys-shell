@@ -91,6 +91,19 @@ main() {
     run_quiet "Syncing and updating system" xbps-install -Syu \
         || warn "Final update had warnings, check $LOG_FILE"
 
+    # Enable ly only now so it does not start mid-session - takes effect on next boot
+    step "Register ly display manager"
+    if [[ -d /etc/sv/ly ]]; then
+        if [[ ! -L /var/service/ly ]]; then
+            ln -sf /etc/sv/ly /var/service/ly
+            success "ly registered - will start on next boot"
+        else
+            info "ly already registered"
+        fi
+    else
+        warn "ly service not found in /etc/sv, skipping"
+    fi
+
     step "Done"
     print_summary
     echo -e "  ${_GREEN}${_BOLD}Sectly's Shell is ready.${_RESET} Reboot to start your desktop."

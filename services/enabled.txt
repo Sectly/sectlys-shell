@@ -9,13 +9,9 @@ seatd
 
 # Networking
 NetworkManager
-NetworkManager-dispatcher
 
 # Bluetooth
 bluetoothd
-
-# Display manager
-ly
 
 # Printing
 cupsd

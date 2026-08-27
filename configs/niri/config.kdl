@@ -95,11 +95,6 @@ window-rule {
     open-floating true
 }
 
-// Float file picker dialogs
-window-rule {
-    match is-dialog=true
-    open-floating true
-}
 
 binds {
     // Applications

@@ -2,6 +2,8 @@
 niri
 quickshell
 alacritty
+wayland
+wayland-protocols
 
 # Qt Wayland backend (required for Quickshell)
 qt6-wayland

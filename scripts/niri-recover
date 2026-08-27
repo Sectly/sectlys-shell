@@ -23,7 +23,8 @@ fi
 NIRI_BIN=$(command -v niri-session 2>/dev/null || command -v niri)
 [[ -n "$NIRI_BIN" ]] || { echo "niri not found in PATH"; exit 1; }
 
-"$NIRI_BIN" "$@"
+# Wrap in dbus-run-session so IPC, notifications and portals work
+exec dbus-run-session "$NIRI_BIN" "$@"
 exit_code=$?
 
 if [[ $exit_code -ne 0 ]]; then

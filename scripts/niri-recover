@@ -3,6 +3,7 @@
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export QT_PLUGIN_PATH=/usr/lib/qt6/plugins
 export GDK_BACKEND=wayland
 export SDL_VIDEODRIVER=wayland
 export XDG_SESSION_TYPE=wayland

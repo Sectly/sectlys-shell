@@ -56,7 +56,7 @@ v4l2loopback
 
 # Brightness and power
 brightnessctl
-UPower
+upower
 acpid
 
 # Storage / file system integration

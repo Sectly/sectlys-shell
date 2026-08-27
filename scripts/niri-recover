@@ -6,6 +6,8 @@ export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
 export GDK_BACKEND=wayland
 export SDL_VIDEODRIVER=wayland
 export XDG_SESSION_TYPE=wayland
+export CLUTTER_BACKEND=wayland
+export _JAVA_AWT_WM_NONREPARENTING=1
 
 uid=$(id -u)
 export XDG_RUNTIME_DIR="/run/user/${uid}"
@@ -21,7 +23,10 @@ if [[ -z "$NIRI_BIN" ]]; then
     exit 1
 fi
 
-dbus-run-session "$NIRI_BIN" "$@"
+mkdir -p "$HOME/.local/state"
+LOG="$HOME/.local/state/niri-session.log"
+
+dbus-run-session "$NIRI_BIN" "$@" >"$LOG" 2>&1
 exit_code=$?
 
 if [[ $exit_code -ne 0 ]]; then
@@ -29,7 +34,10 @@ if [[ $exit_code -ne 0 ]]; then
     clear
     echo ""
     echo "  Niri exited with error code $exit_code."
-    echo "  You are now in a recovery shell."
+    echo "  Log: $LOG"
+    echo ""
+    tail -20 "$LOG"
+    echo ""
     echo "  To restart niri:  $NIRI_BIN"
     echo "  To return to ly:  exit"
     echo ""

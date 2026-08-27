@@ -50,8 +50,8 @@ layout {
 // Wallpaper
 spawn-at-startup "swaybg" "-m" "fill" "-i" "/usr/share/sectlys-shell/wallpapers/default.png"
 
-// Spawn Quickshell - restart up to 3 times on crash, then give up
-spawn-at-startup "bash" "-c" "export QT_QPA_PLATFORM=wayland; for i in 1 2 3; do quickshell && break; sleep 2; done"
+// Spawn Quickshell - restart up to 3 times on crash, log output for debugging
+spawn-at-startup "bash" "-c" "mkdir -p ~/.local/state; for i in 1 2 3; do quickshell >> ~/.local/state/quickshell.log 2>&1 && break; sleep 2; done"
 
 // Polkit authentication agent
 spawn-at-startup "lxqt-policykit-agent"
@@ -185,6 +185,16 @@ binds {
     XF86AudioPlay  { spawn "playerctl" "play-pause"; }
     XF86AudioNext  { spawn "playerctl" "next"; }
     XF86AudioPrev  { spawn "playerctl" "previous"; }
+
+    // TTY switching (chvt required since niri doesn't forward Ctrl+Alt+Fx without full logind)
+    Ctrl+Alt+F1 { spawn "chvt" "1"; }
+    Ctrl+Alt+F2 { spawn "chvt" "2"; }
+    Ctrl+Alt+F3 { spawn "chvt" "3"; }
+    Ctrl+Alt+F4 { spawn "chvt" "4"; }
+    Ctrl+Alt+F5 { spawn "chvt" "5"; }
+    Ctrl+Alt+F6 { spawn "chvt" "6"; }
+    Ctrl+Alt+F7 { spawn "chvt" "7"; }
+    Ctrl+Alt+F8 { spawn "chvt" "8"; }
 
     // Niri internals
     Super+Shift+E { quit; }

@@ -13,20 +13,17 @@ acpi
 lm_sensors
 tlp
 
-# Bluetooth firmware
-bluez-firmware
-
 # Touchpad
 libinput
 
 # Hardware video acceleration
-libva-mesa-driver
 mesa-vaapi
 intel-media-driver
 libva-utils
 
 # Printer drivers
 foomatic-db
-foomatic-db-ppds
+foomatic-db-engine
 gutenprint
 hplip
+

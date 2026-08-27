@@ -80,7 +80,7 @@ PanelWindow {
                     width: parent.width / 3
                     spacing: Appearance.spacing.small
 
-                    KeybindCategory { label: "Applications" }
+                    KeybindCategory { text: "Applications" }
                     KeybindRow { keys: "Ctrl + Alt + T";   action: "Terminal" }
                     KeybindRow { keys: "Super + Enter";    action: "Terminal" }
                     KeybindRow { keys: "Super + E";        action: "Files" }
@@ -89,7 +89,7 @@ PanelWindow {
 
                     Item { height: Appearance.spacing.small; width: 1 }
 
-                    KeybindCategory { label: "Windows" }
+                    KeybindCategory { text: "Windows" }
                     KeybindRow { keys: "Super + Q";           action: "Close" }
                     KeybindRow { keys: "Super + F";           action: "Maximize column" }
                     KeybindRow { keys: "Super + Shift + F";   action: "Fullscreen" }
@@ -101,20 +101,20 @@ PanelWindow {
                     width: parent.width / 3
                     spacing: Appearance.spacing.small
 
-                    KeybindCategory { label: "Focus" }
+                    KeybindCategory { text: "Focus" }
                     KeybindRow { keys: "Super + H / L";       action: "Column left / right" }
                     KeybindRow { keys: "Super + J / K";       action: "Window down / up" }
                     KeybindRow { keys: "Super + Arrows";      action: "Same as above" }
 
                     Item { height: Appearance.spacing.small; width: 1 }
 
-                    KeybindCategory { label: "Move" }
+                    KeybindCategory { text: "Move" }
                     KeybindRow { keys: "Super + Shift + H/L"; action: "Move column" }
                     KeybindRow { keys: "Super + Shift + J/K"; action: "Move window" }
 
                     Item { height: Appearance.spacing.small; width: 1 }
 
-                    KeybindCategory { label: "Workspaces" }
+                    KeybindCategory { text: "Workspaces" }
                     KeybindRow { keys: "Super + 1–9";         action: "Switch workspace" }
                     KeybindRow { keys: "Super + Shift + 1–9"; action: "Move to workspace" }
                     KeybindRow { keys: "Super + Tab";         action: "Next workspace" }
@@ -125,21 +125,21 @@ PanelWindow {
                     width: parent.width / 3
                     spacing: Appearance.spacing.small
 
-                    KeybindCategory { label: "Screenshots" }
+                    KeybindCategory { text: "Screenshots" }
                     KeybindRow { keys: "Print";             action: "Region screenshot" }
                     KeybindRow { keys: "Shift + Print";     action: "Full screen" }
                     KeybindRow { keys: "Ctrl + Print";      action: "Focused window" }
 
                     Item { height: Appearance.spacing.small; width: 1 }
 
-                    KeybindCategory { label: "Media" }
+                    KeybindCategory { text: "Media" }
                     KeybindRow { keys: "Volume keys";       action: "Volume up / down / mute" }
                     KeybindRow { keys: "Brightness keys";   action: "Brightness up / down" }
                     KeybindRow { keys: "Media keys";        action: "Play / next / prev" }
 
                     Item { height: Appearance.spacing.small; width: 1 }
 
-                    KeybindCategory { label: "System" }
+                    KeybindCategory { text: "System" }
                     KeybindRow { keys: "Super + Shift + L"; action: "Lock screen" }
                     KeybindRow { keys: "Super + Shift + /"; action: "This overlay" }
                     KeybindRow { keys: "Super + Shift + S"; action: "Settings panel" }

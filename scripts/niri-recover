@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Launched by niri on session start.
+# If niri itself exits with an error, this wrapper opens a recovery terminal
+# so the user is not left with a black screen.
+
+niri-session "$@"
+exit_code=$?
+
+if [[ $exit_code -ne 0 ]]; then
+    # niri exited with error - open a recovery terminal on the current TTY
+    export TERM=linux
+    clear
+    echo ""
+    echo "  Niri exited with error code $exit_code."
+    echo "  You are now in a recovery shell."
+    echo "  To view the niri log: journalctl -b | grep niri"
+    echo "  To restart niri:      niri-session"
+    echo "  To return to ly:      exit"
+    echo ""
+    exec bash --login
+fi

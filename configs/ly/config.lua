@@ -49,6 +49,7 @@ ly = {
     xsessions            = "$PREFIX_DIRECTORY/share/xsessions",
     xinitrc              = nil,
     shell                = false,
+    vt_switch            = true,
 
     -- TTY
     tty                  = 2,

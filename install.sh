@@ -100,6 +100,19 @@ main() {
         else
             info "ly already registered"
         fi
+
+        # Disable agetty on the same TTY ly uses (default: tty2)
+        # agetty and ly on the same TTY causes input conflicts
+        local ly_tty
+        ly_tty=$(grep -E "^tty\s*=" /etc/ly/config.ini /etc/ly/config.lua 2>/dev/null \
+            | head -1 | grep -oP '\d+')
+        ly_tty="${ly_tty:-2}"
+        if [[ -L "/var/service/agetty-tty${ly_tty}" ]]; then
+            rm -f "/var/service/agetty-tty${ly_tty}"
+            success "Disabled agetty-tty${ly_tty} to avoid conflict with ly"
+        else
+            info "agetty-tty${ly_tty} not active, no conflict to resolve"
+        fi
     else
         warn "ly service not found in /etc/sv, skipping"
     fi

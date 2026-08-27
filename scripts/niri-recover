@@ -3,6 +3,14 @@
 # If niri itself exits with an error, this wrapper opens a recovery terminal
 # so the user is not left with a black screen.
 
+# Ensure Wayland environment is set even if ly didn't load /etc/environment
+export MOZ_ENABLE_WAYLAND=1
+export QT_QPA_PLATFORM=wayland
+export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
+export GDK_BACKEND=wayland
+export SDL_VIDEODRIVER=wayland
+export XDG_SESSION_TYPE=wayland
+
 niri-session "$@"
 exit_code=$?
 

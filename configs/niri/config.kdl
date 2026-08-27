@@ -51,7 +51,7 @@ layout {
 spawn-at-startup "swaybg" "-m" "fill" "-i" "/usr/share/sectlys-shell/wallpapers/default.png"
 
 // Spawn Quickshell - restart up to 3 times on crash, then give up
-spawn-at-startup "bash" "-c" "for i in 1 2 3; do quickshell && break; sleep 2; done"
+spawn-at-startup "bash" "-c" "export QT_QPA_PLATFORM=wayland; for i in 1 2 3; do quickshell && break; sleep 2; done"
 
 // Polkit authentication agent
 spawn-at-startup "lxqt-policykit-agent"

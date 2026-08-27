@@ -27,19 +27,20 @@ install_manifest() {
     done
 
     local already=$(( ${#all_pkgs[@]} - ${#pkgs[@]} ))
+    PKGS_SKIPPED=$(( PKGS_SKIPPED + already ))
+
     if [[ ${#pkgs[@]} -eq 0 ]]; then
-        info "$label: all ${#all_pkgs[@]} packages already installed, skipping"
+        info "$label: all ${#all_pkgs[@]} already installed"
         return 0
     fi
 
     [[ $already -gt 0 ]] && info "$label: $already already installed, installing ${#pkgs[@]} new"
 
-    printf '%s\n' "${pkgs[@]}" \
-        | pv -l -s "${#pkgs[@]}" -p -t -e -N "$label" \
-        | xargs xbps-install -y \
+    run_quiet "Installing $label (${#pkgs[@]} packages)" \
+        xbps-install -y "${pkgs[@]}" \
         || die "Failed installing packages from $label"
 
-    success "$label: ${#pkgs[@]} packages installed"
+    PKGS_INSTALLED=$(( PKGS_INSTALLED + ${#pkgs[@]} ))
 }
 
 install_morewaita() {
@@ -52,29 +53,17 @@ install_morewaita() {
         xbps-install -y MoreWaita && success "MoreWaita installed via XBPS" && return 0
     fi
 
-    info "Downloading MoreWaita icon theme from GitHub"
-    local tmpdir
-    tmpdir="$(mktemp -d)"
-    local tarball="$tmpdir/morewaita.tar.gz"
-
-    curl -fsSL "https://github.com/somepaulo/MoreWaita/archive/refs/heads/main.tar.gz" \
-        | pv -N "MoreWaita" > "$tarball" \
-        || die "Failed to download MoreWaita"
-
-    tar -xzf "$tarball" -C "$tmpdir" \
-        || die "Failed to extract MoreWaita"
-
-    local srcdir="$tmpdir/MoreWaita-main"
-    [ -d "$srcdir" ] || die "MoreWaita source directory not found after extraction"
-
-    install -d /usr/share/icons/MoreWaita
-    cp -r "$srcdir/." /usr/share/icons/MoreWaita/
-    rm -rf "$tmpdir"
-
-    if command -v gtk-update-icon-cache &>/dev/null; then
-        gtk-update-icon-cache -f -t /usr/share/icons/MoreWaita/ 2>/dev/null || true
-    fi
-
+    run_quiet "Downloading MoreWaita icon theme" bash -c '
+        tmpdir="$(mktemp -d)"
+        curl -fsSL "https://github.com/somepaulo/MoreWaita/archive/refs/heads/main.tar.gz" \
+            -o "$tmpdir/morewaita.tar.gz" || exit 1
+        tar -xzf "$tmpdir/morewaita.tar.gz" -C "$tmpdir" || exit 1
+        install -d /usr/share/icons/MoreWaita
+        cp -r "$tmpdir/MoreWaita-main/." /usr/share/icons/MoreWaita/
+        rm -rf "$tmpdir"
+        command -v gtk-update-icon-cache &>/dev/null && \
+            gtk-update-icon-cache -f -t /usr/share/icons/MoreWaita/ 2>/dev/null || true
+    ' || die "Failed to install MoreWaita"
     success "MoreWaita icon theme installed"
 }
 
@@ -88,10 +77,10 @@ install_bun() {
         xbps-install -y bun && success "Bun installed via XBPS" && return 0
     fi
 
-    info "Downloading Bun installer"
-    curl -fsSL https://bun.sh/install | pv -N "bun installer" | bash \
+    run_quiet "Downloading and installing Bun" \
+        bash -c 'curl -fsSL https://bun.sh/install | bash' \
         || die "Bun installation failed"
-    success "Bun installed"
+    PKGS_INSTALLED=$(( PKGS_INSTALLED + 1 ))
 }
 
 install_all_packages() {

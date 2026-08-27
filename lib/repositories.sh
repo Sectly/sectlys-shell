@@ -11,57 +11,47 @@ setup_repositories() {
     log_section "Repository configuration"
 
     if _stamp_check "repositories"; then
-        info "Repositories already configured (stamp found), syncing only"
+        info "Repositories already configured, syncing only"
         step "Update XBPS"
-        xbps-install -Syu xbps || die "Failed to update XBPS"
+        run_quiet "Updating XBPS" xbps-install -Syu xbps || die "Failed to update XBPS"
         step "Synchronize repositories"
-        xbps-install -S || die "Repository sync failed"
-        success "Repositories synchronized"
+        run_quiet "Syncing package repos" xbps-install -S || die "Repository sync failed"
         return 0
     fi
 
     step "Update XBPS"
-    xbps-install -Syu xbps || die "Failed to update XBPS"
-    success "XBPS updated"
+    run_quiet "Updating XBPS package manager" xbps-install -Syu xbps \
+        || die "Failed to update XBPS"
 
-    step "Enable nonfree repository"
-    if _repo_installed void-repo-nonfree; then
-        info "nonfree already enabled, skipping"
-    else
-        xbps-install -Sy void-repo-nonfree || die "Failed to enable nonfree repo"
-        success "nonfree enabled"
+    step "Enable extra repositories"
+    if ! _repo_installed void-repo-nonfree; then
+        run_quiet "Enabling nonfree" xbps-install -Sy void-repo-nonfree \
+            || die "Failed to enable nonfree repo"
     fi
-
-    step "Enable multilib repository"
-    if _repo_installed void-repo-multilib; then
-        info "multilib already enabled, skipping"
-    else
-        xbps-install -Sy void-repo-multilib || die "Failed to enable multilib repo"
-        success "multilib enabled"
+    if ! _repo_installed void-repo-multilib; then
+        run_quiet "Enabling multilib" xbps-install -Sy void-repo-multilib \
+            || die "Failed to enable multilib repo"
     fi
-
-    step "Enable multilib/nonfree repository"
-    if _repo_installed void-repo-multilib-nonfree; then
-        info "multilib/nonfree already enabled, skipping"
-    else
-        xbps-install -Sy void-repo-multilib-nonfree || die "Failed to enable multilib/nonfree repo"
-        success "multilib/nonfree enabled"
+    if ! _repo_installed void-repo-multilib-nonfree; then
+        run_quiet "Enabling multilib-nonfree" xbps-install -Sy void-repo-multilib-nonfree \
+            || die "Failed to enable multilib-nonfree repo"
     fi
+    success "Extra repositories enabled"
 
     step "Configure voiders.dev repository"
     if [[ -f "$VOIDERS_CONF" ]]; then
-        info "voiders.dev already configured, skipping"
+        info "voiders.dev already configured"
     else
         echo "repository=$VOIDERS_URL" > "$VOIDERS_CONF" || die "Failed to write voiders.dev repo config"
-        info "Trusting voiders.dev signing key"
         # printf 'y\n' auto-answers the RSA key trust prompt from xbps on first sync
-        printf 'y\n' | xbps-install -Sy || warn "voiders.dev sync had warnings, packages from this repo may not install"
+        run_quiet "Trusting voiders.dev and syncing" bash -c "printf 'y\n' | xbps-install -Sy" \
+            || warn "voiders.dev sync had warnings, packages from this repo may not install"
         success "voiders.dev configured"
     fi
 
     step "Synchronize repositories"
-    xbps-install -S || die "Repository sync failed"
-    success "Repositories synchronized"
+    run_quiet "Syncing package repos" xbps-install -S \
+        || die "Repository sync failed"
 
     _stamp_done "repositories"
 }

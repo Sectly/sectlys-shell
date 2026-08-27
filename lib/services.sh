@@ -32,8 +32,10 @@ enable_services() {
         fi
     done < "$SERVICES_FILE"
 
+    SERVICES_ENABLED=$(( SERVICES_ENABLED + enabled ))
+
     if [[ $enabled -eq 0 ]]; then
-        info "All services already enabled, skipping"
+        info "All services already enabled"
     else
         success "Services: $enabled enabled, $skipped already active"
     fi

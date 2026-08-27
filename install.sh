@@ -2,7 +2,7 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG_FILE="/var/log/sectlys-shell-install.log"
+export LOG_FILE="/var/log/sectlys-shell-install.log"
 
 source "$SCRIPT_DIR/lib/logging.sh"
 source "$SCRIPT_DIR/lib/bootstrap.sh"
@@ -78,30 +78,28 @@ main() {
 
     confirm_install
 
+    log_section "Detecting target user"
     detect_user
+
     setup_repositories
     install_all_packages
     setup_flatpak
     deploy_configs
     enable_services
 
-    step "Configure graphical login (ly)"
-    success "Graphical login configured"
-
     step "Final system update"
-    xbps-install -Syu || warn "Final update had warnings, check log"
-    success "System up to date"
+    run_quiet "Syncing and updating system" xbps-install -Syu \
+        || warn "Final update had warnings, check $LOG_FILE"
 
-    step "Installation complete"
-
-    echo ""
-    echo -e "  ${_GREEN}${_BOLD}Installation complete.${_RESET} Your system is ready."
+    step "Done"
+    print_summary
+    echo -e "  ${_GREEN}${_BOLD}Sectly's Shell is ready.${_RESET} Reboot to start your desktop."
     echo ""
 
     read -rp "  Reboot now? [Y/n] " _reply
     case "${_reply,,}" in
         ""|y|yes) reboot ;;
-        *) echo "  Reboot when ready: sudo reboot" ;;
+        *) echo -e "  ${_DIM}Reboot when ready:${_RESET} sudo reboot" ;;
     esac
 }
 

@@ -59,7 +59,6 @@ spawn-at-startup "lxqt-policykit-agent"
 // PipeWire session
 spawn-at-startup "pipewire"
 spawn-at-startup "wireplumber"
-spawn-at-startup "pipewire-pulse"
 
 // Network tray applet
 spawn-at-startup "nm-applet" "--indicator"
@@ -69,6 +68,7 @@ spawn-at-startup "swayidle" "-w" "timeout" "300" "swaylock -f -c 2d2d2d" "timeou
 
 // Credential storage
 spawn-at-startup "gnome-keyring-daemon" "--start" "--components=secrets,pkcs11"
+
 
 // OctoXBPS update notifier
 spawn-at-startup "octoxbps-notifier"
@@ -103,8 +103,8 @@ binds {
     Super+E { spawn "nautilus"; }
     Super+B { spawn "helium"; }
 
-    // Launcher (Quickshell exposes its own launcher)
-    Super+Space { spawn "qs" "-f" "launcher"; }
+    // Launcher
+    Super+Space { spawn "qs" "ipc" "call" "launcher" "toggle"; }
 
     // Window management
     Super+Q { close-window; }
@@ -128,6 +128,8 @@ binds {
     Super+Shift+K { move-window-up; }
     Super+Shift+Left  { move-column-left; }
     Super+Shift+Right { move-column-right; }
+    Super+Shift+Up    { move-window-up; }
+    Super+Shift+Down  { move-window-down; }
 
     // Workspace switching
     Super+1 { focus-workspace 1; }

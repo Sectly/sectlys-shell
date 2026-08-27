@@ -26,8 +26,15 @@ print_banner() {
     echo "   ╚════██║██╔══╝  ██║        ██║   ██║    ╚██╔╝  ╚════██║"
     echo "   ███████║███████╗╚██████╗   ██║   ███████╗██║   ███████║"
     echo "   ╚══════╝╚══════╝ ╚═════╝   ╚═╝   ╚══════╝╚═╝   ╚══════╝"
+    echo ""
+    echo "    ███████╗██╗  ██╗███████╗██╗     ██╗"
+    echo "    ██╔════╝██║  ██║██╔════╝██║     ██║"
+    echo "    ███████╗███████║█████╗  ██║     ██║"
+    echo "    ╚════██║██╔══██║██╔══╝  ██║     ██║"
+    echo "    ███████║██║  ██║███████╗███████╗███████╗"
+    echo "    ╚══════╝╚═╝  ╚═╝╚══════╝╚══════╝╚══════╝"
     echo -e "${_RESET}"
-    echo -e "   ${_BOLD}Sectly's Shell${_RESET}  ${_DIM}-- Void Linux Desktop Installer${_RESET}"
+    echo -e "   ${_DIM}Void Linux Desktop Installer${_RESET}"
     echo ""
     _INSTALL_START=$(date +%s)
 }

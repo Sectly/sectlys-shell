@@ -5,16 +5,6 @@ SERVICES_FILE="$(dirname "${BASH_SOURCE[0]}")/../services/enabled.txt"
 enable_services() {
     log_section "runit services"
 
-    # seatd conflicts with elogind for seat management — disable it if running
-    step "Disable conflicting seat manager (seatd)"
-    if [[ -L /var/service/seatd ]]; then
-        sv stop seatd 2>/dev/null || true
-        rm -f /var/service/seatd
-        info "Stopped and unlinked seatd (elogind handles seat management)"
-    else
-        info "seatd not active, nothing to do"
-    fi
-
     step "Enable system services"
 
     [[ -f "$SERVICES_FILE" ]] || die "Services list not found: $SERVICES_FILE"

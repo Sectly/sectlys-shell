@@ -97,7 +97,7 @@ window-rule {
 
 // Float file picker dialogs
 window-rule {
-    match is-dialog true
+    match is-dialog=true
     open-floating true
 }
 

@@ -62,8 +62,21 @@ install_manifest() {
         printf "\r%60s\r" ""
         PKGS_INSTALLED=$(( PKGS_INSTALLED + ok ))
         if [[ ${#failed[@]} -gt 0 ]]; then
-            warn "${#failed[@]} package(s) could not be installed: ${failed[*]}"
-            warn "Check $LOG_FILE for details. Continuing..."
+            echo ""
+            warn "${#failed[@]} package(s) could not be installed:"
+            for f in "${failed[@]}"; do
+                echo -e "      ${_RED}-${_RESET} $f"
+            done
+            echo ""
+            if [[ "${AUTO_YES:-0}" -eq 1 ]]; then
+                warn "Continuing despite failures (-y flag set)"
+            else
+                read -rp "  Continue installation anyway? [y/N] " _cont
+                case "${_cont,,}" in
+                    y|yes) warn "Continuing with missing packages..." ;;
+                    *) die "Installation aborted. Check $LOG_FILE for details." ;;
+                esac
+            fi
         fi
     fi
 }

@@ -15,7 +15,7 @@ libaom
 dav1d
 x264
 x265
-libopus
+opus
 libvorbis
 
 # Thumbnail support for Nautilus

@@ -7,11 +7,12 @@ gamescope
 
 # Vulkan
 vulkan-loader
-vulkan-tools
+Vulkan-Tools
 mesa-vulkan-radeon
 mesa-vulkan-intel
 
 # 32-bit graphics (Proton / Steam)
-lib32-mesa
-lib32-vulkan-loader
-lib32-glibc
+mesa-32bit
+mesa-dri-32bit
+vulkan-loader-32bit
+glibc-32bit

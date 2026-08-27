@@ -16,6 +16,19 @@ detect_user() {
     [[ -d "$TARGET_HOME" ]] || die "Home directory not found for $TARGET_USER: $TARGET_HOME"
 
     info "Target user: $TARGET_USER ($TARGET_HOME)"
+
+    # Add user to required groups for seat/input/video access
+    for group in _seatd input video audio plugdev; do
+        if getent group "$group" &>/dev/null; then
+            if id -nG "$TARGET_USER" | grep -qw "$group"; then
+                info "Already in group: $group"
+            else
+                usermod -aG "$group" "$TARGET_USER"
+                info "Added to group: $group"
+            fi
+        fi
+    done
+    success "User groups configured"
 }
 
 setup_xdg_dirs() {

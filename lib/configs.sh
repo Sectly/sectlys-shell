@@ -221,6 +221,26 @@ _configure_ly() {
     install -m 755 "$src_dir/startup.sh"    "$ly_dir/startup.sh"    || die "Failed to install startup.sh"
     install -m 755 "$src_dir/bootsplash.sh" "$ly_dir/bootsplash.sh" || die "Failed to install bootsplash.sh"
 
+    # Ensure ly PAM config includes elogind session module so XDG_RUNTIME_DIR gets created
+    local pam_ly="/etc/pam.d/ly"
+    if [[ -f "$pam_ly" ]]; then
+        if ! grep -q "pam_elogind" "$pam_ly"; then
+            echo "session optional pam_elogind.so" >> "$pam_ly"
+            info "Added pam_elogind to $pam_ly"
+        else
+            info "pam_elogind already in $pam_ly"
+        fi
+    else
+        # Create a minimal ly PAM config
+        cat > "$pam_ly" <<'EOF'
+auth    include login
+account include login
+session include login
+session optional pam_elogind.so
+EOF
+        info "Created $pam_ly with elogind session"
+    fi
+
     success "ly configured"
 }
 

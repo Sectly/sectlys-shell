@@ -47,8 +47,8 @@ deploy_configs() {
     step "Configure XDG portals"
     _configure_portals
 
-    step "Configure greetd display manager"
-    _configure_greetd
+    step "Configure ly display manager"
+    _configure_ly
 
     step "Configure Niri session"
     _configure_niri_session
@@ -188,36 +188,6 @@ org.freedesktop.impl.portal.ScreenCast=wlr"
     success "XDG portals configured"
 }
 
-_configure_greetd() {
-    local greetd_dir="/etc/greetd"
-    local src="$CONFIGS_DIR/greetd/config.toml"
-
-    [[ -d "$greetd_dir" ]] || die "greetd config dir not found. Is greetd installed?"
-    [[ -f "$src" ]] || die "configs/greetd/config.toml not found"
-
-    cp "$src" "$greetd_dir/config.toml" || die "Failed to deploy greetd config"
-
-    # greetd PAM - ensure elogind session module is included
-    local pam_greetd="/etc/pam.d/greetd"
-    if [[ -f "$pam_greetd" ]]; then
-        if ! grep -q "pam_elogind" "$pam_greetd"; then
-            echo "session optional pam_elogind.so" >> "$pam_greetd"
-            info "Added pam_elogind to $pam_greetd"
-        fi
-    else
-        cat > "$pam_greetd" <<'EOF'
-auth    include login
-account include login
-session include login
-session optional pam_elogind.so
-EOF
-    fi
-
-    # Add _greeter to video group so it can access the GPU
-    usermod -aG video _greeter 2>/dev/null || true
-
-    success "greetd configured"
-}
 
 _configure_ly() {
     local ly_dir="/etc/ly"
@@ -305,10 +275,6 @@ _configure_niri_session() {
 
     mkdir -p /usr/share/wayland-sessions
 
-    if [[ -f "$dst" ]]; then
-        info "niri.desktop already exists, skipping"
-    else
-        cp "$src" "$dst"
-        success "Niri session file installed"
-    fi
+    cp "$src" "$dst"
+    success "Niri session file installed"
 }

@@ -11,7 +11,7 @@ qt6-base
 qt6ct
 
 # Display manager
-greetd
+ly
 
 # Audio
 pipewire

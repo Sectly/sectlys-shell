@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
-# Launched by niri on session start.
-# If niri itself exits with an error, this wrapper opens a recovery terminal
-# so the user is not left with a black screen.
 
-# Ensure Wayland environment is set even if ly didn't load /etc/environment
 export MOZ_ENABLE_WAYLAND=1
 export QT_QPA_PLATFORM=wayland
 export QT_WAYLAND_DISABLE_WINDOWDECORATION=1
@@ -11,20 +7,21 @@ export GDK_BACKEND=wayland
 export SDL_VIDEODRIVER=wayland
 export XDG_SESSION_TYPE=wayland
 
-# Ensure XDG_RUNTIME_DIR exists - elogind PAM may not create it on Void
 uid=$(id -u)
 export XDG_RUNTIME_DIR="/run/user/${uid}"
 if [[ ! -d "$XDG_RUNTIME_DIR" ]]; then
     mkdir -p "$XDG_RUNTIME_DIR"
+    chown "${uid}:${uid}" "$XDG_RUNTIME_DIR"
     chmod 700 "$XDG_RUNTIME_DIR"
 fi
 
-# Use niri-session if available, fall back to niri
-NIRI_BIN=$(command -v niri-session 2>/dev/null || command -v niri)
-[[ -n "$NIRI_BIN" ]] || { echo "niri not found in PATH"; exit 1; }
+NIRI_BIN=$(command -v niri-session 2>/dev/null || command -v niri 2>/dev/null)
+if [[ -z "$NIRI_BIN" ]]; then
+    echo "niri not found in PATH"
+    exit 1
+fi
 
-# Wrap in dbus-run-session so IPC, notifications and portals work
-exec dbus-run-session "$NIRI_BIN" "$@"
+dbus-run-session "$NIRI_BIN" "$@"
 exit_code=$?
 
 if [[ $exit_code -ne 0 ]]; then
@@ -33,8 +30,8 @@ if [[ $exit_code -ne 0 ]]; then
     echo ""
     echo "  Niri exited with error code $exit_code."
     echo "  You are now in a recovery shell."
-    echo "  To restart niri:      $NIRI_BIN"
-    echo "  To return to ly:      exit"
+    echo "  To restart niri:  $NIRI_BIN"
+    echo "  To return to ly:  exit"
     echo ""
     exec bash --login
 fi

@@ -91,17 +91,17 @@ main() {
     run_quiet "Syncing and updating system" xbps-install -Syu \
         || warn "Final update had warnings, check $LOG_FILE"
 
-    # Register greetd - takes effect on next boot
-    step "Register greetd display manager"
-    if [[ -d /etc/sv/greetd ]]; then
-        if [[ ! -L /var/service/greetd ]]; then
-            ln -sf /etc/sv/greetd /var/service/greetd
-            success "greetd registered - will start on next boot"
+    # Register ly - takes effect on next boot
+    step "Register ly display manager"
+    if [[ -d /etc/sv/ly ]]; then
+        if [[ ! -L /var/service/ly ]]; then
+            ln -sf /etc/sv/ly /var/service/ly
+            success "ly registered - will start on next boot"
         else
-            info "greetd already registered"
+            info "ly already registered"
         fi
     else
-        warn "greetd service not found in /etc/sv, skipping"
+        warn "ly service not found in /etc/sv, skipping"
     fi
 
     step "Done"

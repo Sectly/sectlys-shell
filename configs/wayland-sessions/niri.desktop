@@ -3,3 +3,4 @@ Name=Niri
 Comment=Sectly's Shell
 Exec=/usr/local/bin/niri-recover
 Type=Application
+DesktopNames=niri

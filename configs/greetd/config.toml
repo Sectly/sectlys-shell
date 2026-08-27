@@ -1,8 +1,0 @@
-[terminal]
-vt = 1
-
-[default_session]
-# agreety is greetd's built-in TUI greeter
-# launches niri-recover which sets up the environment then starts niri
-command = "agreety --cmd /usr/local/bin/niri-recover"
-user = "_greeter"

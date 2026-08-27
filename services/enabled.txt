@@ -13,6 +13,9 @@ NetworkManager
 # Bluetooth
 bluetoothd
 
+# Display manager
+greetd
+
 # Printing
 cupsd
 

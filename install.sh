@@ -91,30 +91,17 @@ main() {
     run_quiet "Syncing and updating system" xbps-install -Syu \
         || warn "Final update had warnings, check $LOG_FILE"
 
-    # Enable ly only now so it does not start mid-session - takes effect on next boot
-    step "Register ly display manager"
-    if [[ -d /etc/sv/ly ]]; then
-        if [[ ! -L /var/service/ly ]]; then
-            ln -sf /etc/sv/ly /var/service/ly
-            success "ly registered - will start on next boot"
+    # Register greetd - takes effect on next boot
+    step "Register greetd display manager"
+    if [[ -d /etc/sv/greetd ]]; then
+        if [[ ! -L /var/service/greetd ]]; then
+            ln -sf /etc/sv/greetd /var/service/greetd
+            success "greetd registered - will start on next boot"
         else
-            info "ly already registered"
-        fi
-
-        # Disable agetty on the same TTY ly uses (default: tty2)
-        # agetty and ly on the same TTY causes input conflicts
-        local ly_tty
-        ly_tty=$(grep -E "^tty\s*=" /etc/ly/config.ini /etc/ly/config.lua 2>/dev/null \
-            | head -1 | grep -oP '\d+')
-        ly_tty="${ly_tty:-2}"
-        if [[ -L "/var/service/agetty-tty${ly_tty}" ]]; then
-            rm -f "/var/service/agetty-tty${ly_tty}"
-            success "Disabled agetty-tty${ly_tty} to avoid conflict with ly"
-        else
-            info "agetty-tty${ly_tty} not active, no conflict to resolve"
+            info "greetd already registered"
         fi
     else
-        warn "ly service not found in /etc/sv, skipping"
+        warn "greetd service not found in /etc/sv, skipping"
     fi
 
     step "Done"

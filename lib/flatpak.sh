@@ -3,6 +3,11 @@
 setup_flatpak() {
     log_section "Flatpak"
 
+    if _stamp_check "flatpak"; then
+        info "Flatpak already configured (stamp found), skipping"
+        return 0
+    fi
+
     step "Install Flatpak"
     if command -v flatpak &>/dev/null; then
         info "Flatpak already installed ($(flatpak --version))"
@@ -29,4 +34,6 @@ setup_flatpak() {
     else
         warn "Bazaar not found in repos, install manually from voiders.dev once available"
     fi
+
+    _stamp_done "flatpak"
 }

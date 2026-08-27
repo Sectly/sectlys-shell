@@ -7,6 +7,10 @@ DOTFILES_DIR="$REPO_ROOT/dotfiles"
 deploy_configs() {
     log_section "Configuration deployment"
 
+    if _stamp_check "configs"; then
+        info "Configs already deployed (stamp found), applying updates only"
+    fi
+
     step "Deploy system environment"
     _deploy_environment
 
@@ -58,6 +62,8 @@ deploy_configs() {
     step "Update desktop database"
     update-desktop-database /usr/share/applications 2>/dev/null || true
     sudo -u "$TARGET_USER" xdg-user-dirs-update
+
+    _stamp_done "configs"
 }
 
 _deploy_config_dir() {
@@ -67,6 +73,10 @@ _deploy_config_dir() {
     local dst="$TARGET_HOME/$dst_rel"
 
     [[ -d "$src" ]] || { warn "Config dir not found: $src, skipping"; return 0; }
+
+    if [[ -d "$dst" ]] && [[ -n "$(ls -A "$dst" 2>/dev/null)" ]]; then
+        info "$src_name: already deployed, adding new files only"
+    fi
 
     mkdir -p "$dst"
     cp -rn "$src/." "$dst/"
@@ -171,14 +181,19 @@ _deploy_environment() {
 
 _configure_portals() {
     local portal_dir="/etc/xdg"
-
-    mkdir -p "$portal_dir"
-    cat > "$portal_dir/xdg-desktop-portal-niri.conf" <<'EOF'
-[preferred]
+    local portal_conf="$portal_dir/xdg-desktop-portal-niri.conf"
+    local expected="[preferred]
 default=gtk
 org.freedesktop.impl.portal.Screenshot=wlr
-org.freedesktop.impl.portal.ScreenCast=wlr
-EOF
+org.freedesktop.impl.portal.ScreenCast=wlr"
+
+    if [[ -f "$portal_conf" ]] && [[ "$(cat "$portal_conf")" == "$expected" ]]; then
+        info "XDG portals already configured, skipping"
+        return 0
+    fi
+
+    mkdir -p "$portal_dir"
+    printf '%s\n' "$expected" > "$portal_conf"
     success "XDG portals configured"
 }
 

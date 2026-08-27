@@ -42,3 +42,19 @@ die() {
 log_section() {
     echo -e "\n${_BOLD}=== $* ===${_RESET}"
 }
+
+# --- Stamp file helpers ---
+_STAMP_DIR="/var/lib/sectlys-shell"
+
+_stamp_done() {
+    mkdir -p "$_STAMP_DIR"
+    touch "$_STAMP_DIR/$1.done"
+}
+
+_stamp_check() {
+    [[ -f "$_STAMP_DIR/$1.done" ]]
+}
+
+_stamp_reset() {
+    rm -f "$_STAMP_DIR/$1.done"
+}

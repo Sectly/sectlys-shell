@@ -24,7 +24,6 @@ enable_services() {
         fi
 
         if [[ -L "/var/service/$svc" ]]; then
-            info "Already enabled: $svc"
             skipped=$((skipped + 1))
         else
             ln -sf "/etc/sv/$svc" "/var/service/$svc"
@@ -33,5 +32,9 @@ enable_services() {
         fi
     done < "$SERVICES_FILE"
 
-    success "Services: $enabled enabled, $skipped already active or skipped"
+    if [[ $enabled -eq 0 ]]; then
+        info "All services already enabled, skipping"
+    else
+        success "Services: $enabled enabled, $skipped already active"
+    fi
 }

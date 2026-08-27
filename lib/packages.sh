@@ -97,6 +97,10 @@ install_bun() {
 install_all_packages() {
     log_section "Package installation"
 
+    if _stamp_check "packages"; then
+        info "Packages already installed (stamp found), checking for new packages only"
+    fi
+
     step "Install base system packages"
     install_manifest "$PACKAGES_DIR/base.txt" "base"
 
@@ -129,4 +133,6 @@ install_all_packages() {
 
     step "Install MoreWaita icon theme"
     install_morewaita
+
+    _stamp_done "packages"
 }
